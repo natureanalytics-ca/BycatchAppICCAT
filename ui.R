@@ -8,10 +8,10 @@ header <- dashboardHeader(
   
   #Branding for the app - client logo, link to website, etc.
   title = dashboardBrand(
-    title = "Your brand",
+    title = "BycatchEstimator",
     color = "primary",
-    href = "https://www.google.com",
-    image = "https://natureanalytics.ca/wp-content/uploads/2021/09/Your-logo-example-e1632748674383.png",
+    href = "https://github.com/ebabcock/BycatchEstimator",
+    image = "imgfile.png",
   ),
   
   #Icon to open/close sidebar
@@ -34,6 +34,7 @@ sidebar <- dashboardSidebar(
   minified = TRUE,
   collapsed = FALSE,
 
+  
   #----------------
   #NA footer
   #----------------
@@ -51,11 +52,35 @@ sidebar <- dashboardSidebar(
   #Items
   #-------------
   sidebarMenu(
+    
     menuItem(
       tabName = "home",
       text = "Dashboard",
       icon = icon("home")
-    )
+    ),
+    menuItem(
+      tabName = "upload",
+      text = "Data upload",
+      icon = icon("paperclip"),
+      menuSubItem(
+        text = tags$small("Observer data"),
+        tabName = "Observer_upload",
+      ),
+      menuSubItem(
+        text = tags$small("Logbook data"),
+        tabName = "Logbook_upload"
+      )
+    ),
+   menuItem(
+     tabName = "checks",
+     text = "Data checks",
+     icon = icon("file-lines")
+   ),
+   menuItem(
+     tabName = "help",
+     text = "Help",
+     icon = icon("question")
+   )
   )
 )
 
@@ -81,10 +106,27 @@ body<-dashboardBody(
     tags$link(rel = "stylesheet", type = "text/css", href = "main.css")
   ),
   
-  
+  #load modules here as tabItems
   tabItems(
     tabItem(
-      tabName = "home",
+      tabName = "home", #add landing page here?
+      landingpage_UI("landingpage")
+    ),
+    tabItem(
+      tabName = "Observer_upload",
+      observerupload_UI("observerdata_upload")
+    ),
+    tabItem(
+      tabName = "Logbook_upload",
+      logbookupload_UI("logbookdata_upload")
+    ),
+    tabItem(
+      tabName = "checks",
+      datachecks_UI("datachecks")
+    ),
+    tabItem(
+      tabName = "help",
+      help_UI("help_module")
     )
   )
 )
