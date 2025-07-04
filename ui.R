@@ -6,14 +6,14 @@
 
 header <- dashboardHeader(
   
-  #Branding for the app - client logo, link to website, etc.
-  title = dashboardBrand(
-    title = "BycatchEstimator",
-    color = "primary",
-    href = "https://github.com/ebabcock/BycatchEstimator",
-    image = "imgfile.png",
-  ),
-  
+  # #Branding for the app - client logo, link to website, etc.
+  # title = dashboardBrand(
+  #   title = "BycatchEstimator",
+  #   color = "primary",
+  #   href = "https://github.com/ebabcock/BycatchEstimator",
+  #   image = "imgfile.png",
+  # ),
+  # 
   #Icon to open/close sidebar
   sidebarIcon = icon("compress"),
   
@@ -55,9 +55,16 @@ sidebar <- dashboardSidebar(
     
     menuItem(
       tabName = "home",
-      text = "Dashboard",
-      icon = icon("home")
+      text = tagList(
+        div(
+          style = "display: flex; justify-content: center; align-items: center;",
+        tags$img(
+          src = "imgfile.png",
+          height = "200px"
+        )
+      ))
     ),
+    br(),
     menuItem(
       tabName = "upload",
       text = "Data upload",
@@ -109,7 +116,7 @@ body<-dashboardBody(
   #load modules here as tabItems
   tabItems(
     tabItem(
-      tabName = "home", #add landing page here?
+      tabName = "home", 
       landingpage_UI("landingpage")
     ),
     tabItem(

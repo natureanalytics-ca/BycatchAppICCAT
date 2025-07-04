@@ -2,6 +2,8 @@
 #module data checks
 #-------------------------------
 
+############# UI #############
+
 datachecks_UI <- function(id){
   
   ns <- NS(id)
@@ -13,29 +15,22 @@ datachecks_UI <- function(id){
       width = 12,
       collapsible = FALSE,
       
-      pickerInput(
-        inputId = ns("observer_dataset"),
-        label = "Observer data set",
-        choices = "Name/title of observer data set"
-      ),   
-      pickerInput(
-        inputId = ns("logbook_dataset"),
-        label = "Logbook data set",
-        choices = "Name/title of logbook data set"
-      ),
-      pickerInput(
-        inputId = ns("factor_variables"),
-        label = "Specify factor variables",
-        choices = c("X1","X2","X3","X4")
-      ),
-      pickerInput(
-        inputId = ns("numeric_variables"),
-        label = "Specify numeric variables",
-        choices = c("X1","X2","X3","X4")
-      ),
+      uiOutput(ns("observer_dataset_title")),
+      
+      uiOutput(ns("logbook_dataset_title")),
+      
+      uiOutput(ns("factorvariables_ui")),
+      
+      uiOutput(ns("numericvariables_ui")),
+
       textInput(
         inputId = ns("spp_name"),
-        label = "Species name",
+        label = "Species common name",
+        width = '100%'
+      ),
+      textInput(
+        inputId = ns("spp_scientificname"),
+        label = "Species scientific name",
         width = '100%'
       ),
       textInput(
@@ -59,4 +54,78 @@ datachecks_UI <- function(id){
 
   )
   
+}
+
+
+############# SERVER #############
+
+
+datachecks_SERVER <- function(id, observerdataInput = reactive(NULL), logbookdataInput = reactive(NULL)){
+  moduleServer(
+    id,
+    function(input, output, session){
+      ns <- session$ns
+      
+      observe({
+        observerdataInput()$dt
+        logbookdataInput()$dt
+        print(logbookdataInput()$title)
+        print(observerdataInput()$catchColumn)
+        print(observerdataInput()$catchUnits)
+      })
+      
+      output$observer_dataset_title <- renderUI({
+        textInput(
+          inputId = ns("observer_dataset"),
+          label = "Observer data set",,
+          value = observerdataInput()$title,
+          width = '100%'
+        )
+      })
+      
+      output$logbook_dataset_title <- renderUI({
+        textInput(
+          inputId = ns("logbook_dataset"),
+          label = "Logbook data set",,
+          value = logbookdataInput()$title,
+          width = '100%'
+        )
+      })
+
+      output$factorvariables_ui <- renderUI({
+        pickerInput(
+          inputId = ns("factor_variables"),
+          label = "Specify factor variables",
+          choices = names(observerdataInput()$dt),
+          width = '100%',
+          options = pickerOptions(
+            actionsBox = FALSE,
+            size = 10,
+            selectedTextFormat = "count > 4"
+          ),
+          multiple = TRUE
+        )
+      })
+      
+      output$numericvariables_ui <- renderUI({
+        pickerInput(
+          inputId = ns("numeric_variables"),
+          label = "Specify numeric variables",
+          choices = names(observerdataInput()$dt),
+          width = '100%',
+          options = pickerOptions(
+            actionsBox = FALSE,
+            size = 10,
+            selectedTextFormat = "count > 4"
+          ),
+          multiple = TRUE
+        )
+      })
+  
+      ## Button for running data checks
+      ## Call to bycatchSetup in BycatchEstimator package
+      
+
+      
+    })
 }

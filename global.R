@@ -16,10 +16,12 @@ library(shinycssloaders)
 library(fresh)
 library(shinyalert)
 
+
 #-------------------------
 #App specific libraries
 #-------------------------
-
+library(DT)
+library(readr)
 
 
 #------------------------------------------
