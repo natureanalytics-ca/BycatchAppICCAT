@@ -43,13 +43,16 @@ datachecks_UI <- function(id){
       div(
         style = "display: flex; align-items: center; justify-content: center;",
         actionBttn(
-          inputId = "run_datachecks",
+          inputId = ns("run_datachecks"),
           label = "Run data checks"
         ),
-        actionBttn(
-          inputId = "cancel_datachecks",
-          label = "Cancel"
-        ))
+        # actionBttn(
+        #   inputId = "cancel_datachecks",
+        #   label = "Cancel"
+        # )
+        br(),br(),
+        uiOutput(ns("download_ui")),
+        )
     )
 
   )
@@ -65,14 +68,6 @@ datachecks_SERVER <- function(id, observerdataInput = reactive(NULL), logbookdat
     id,
     function(input, output, session){
       ns <- session$ns
-      
-      observe({
-        observerdataInput()$dt
-        logbookdataInput()$dt
-        print(logbookdataInput()$title)
-        print(observerdataInput()$catchColumn)
-        print(observerdataInput()$catchUnits)
-      })
       
       output$observer_dataset_title <- renderUI({
         textInput(
@@ -123,9 +118,79 @@ datachecks_SERVER <- function(id, observerdataInput = reactive(NULL), logbookdat
       })
   
       ## Button for running data checks
-      ## Call to bycatchSetup in BycatchEstimator package
-      
+      resultsDir <- reactiveVal(NULL)
+      observeEvent(input$run_datachecks,{
 
+        # request any reactive variables
+        req(observerdataInput())
+        req(logbookdataInput())
+
+        # Create temp dir to hold output
+        outDir <- tempfile("bycatch_output_")
+        dir.create(outDir)
+        
+        # Run bycatchSetup function
+        tryCatch({ # for debugging
+          setupObj <- BycatchEstimator::bycatchSetup(
+          obsdat = observerdataInput()$dt,
+          logdat = logbookdataInput()$dt,
+          yearVar = observerdataInput()$yearColumn,
+          obsEffort = observerdataInput()$effortColumn,
+          logEffort = logbookdataInput()$effortColumn,
+          obsCatch = observerdataInput()$catchColumn,
+          catchUnit = observerdataInput()$catchUnits,
+          catchType = observerdataInput()$catchType,
+          logNum = logbookdataInput()$aggregationColumn,
+          sampleUnit = observerdataInput()$sampleUnits,
+          factorVariables = input$factor_variables,
+          numericVariables = input$numeric_variables,
+          baseDir = outDir,
+          runName = input$datachecks_name,
+          runDescription = input$datachecks_name,
+          common = input$spp_name,
+          sp = input$spp_scientificname
+        )
+          print("bycatchSetup ran successfully")
+        }, error = function(e) {
+          showNotification(paste("Error running bycatchSetup:", e$message), type = "error")
+          print(paste("bycatchSetup error:", e$message))
+        })
+        
+        # Save path to generated output
+        resultsDir(outDir)
+        
+        #print(resultsDir())
+        #print(setupObj)
+      })
       
+      output$download_ui <- renderUI({
+        req(resultsDir())
+        downloadButton(ns("downloadZip"), "Download results as ZIP")
+      })
+      
+      output$downloadZip <- downloadHandler(
+        filename = function() {
+          "bycatch_results.zip"
+        },
+        content = function(file) {
+          outDir <- resultsDir()
+          all_files <- list.files(outDir,recursive = TRUE,full.names = TRUE)
+          files_to_zip <- all_files[file.info(all_files)$isdir == FALSE]
+          zip(file, files = files_to_zip, flags = "-j")
+        },
+        contentType = "application/zip"
+      )
+      
+      # observe({
+      #   #observerdataInput()$dt
+      #   #logbookdataInput()$dt
+      #   print(class(observerdataInput()$dt$Catch))
+      #   print(class(observerdataInput()$dt$sampled.sets))
+      #   print(class(observerdataInput()$catchColumn))
+      #   print(class(observerdataInput()$effortColumn))
+      #   print(logbookdataInput()$aggregationColumn)
+      # })
+
     })
 }
+

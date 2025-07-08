@@ -133,7 +133,7 @@ observerupload_SERVER <- function(id){
         previewObserverdata(tryCatch(
           {
             read_csv(input$customObserverData$datapath,
-                     col_names = FALSE, show_col_types = FALSE)
+                     col_names = TRUE, show_col_types = FALSE)
           },
           error = function(e) {
             NULL
@@ -144,10 +144,10 @@ observerupload_SERVER <- function(id){
       previewObserverObj <- reactive({
         req(previewObserverdata())
         dt <- data.frame(previewObserverdata())
-        if(as.logical(input$header)){
-          names(dt) <- dt[1,]
-          dt <- dt[-1, , drop = FALSE]
-        }
+        # if(as.logical(input$header)){
+        #   names(dt) <- dt[1,]
+        #   dt <- dt[-1, , drop = FALSE]
+        # }
         return(dt)
       })
       

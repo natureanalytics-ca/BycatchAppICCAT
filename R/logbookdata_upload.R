@@ -110,7 +110,7 @@ logbookupload_SERVER <- function(id){
         previewLogbookdata(tryCatch(
           {
             read_csv(input$customLogbookData$datapath,
-                     col_names = FALSE, show_col_types = FALSE)
+                     col_names = TRUE, show_col_types = FALSE)
           },
           error = function(e) {
             NULL
@@ -121,10 +121,10 @@ logbookupload_SERVER <- function(id){
       previewLogbookObj <- reactive({
         req(previewLogbookdata())
         dt <- data.frame(previewLogbookdata())
-        if(as.logical(input$header)){
-          names(dt) <- dt[1,]
-          dt <- dt[-1, , drop = FALSE]
-        }
+        # if(as.logical(input$header)){
+        #   names(dt) <- dt[1,]
+        #   dt <- dt[-1, , drop = FALSE]
+        # }
         return(dt)
       })
       
@@ -184,7 +184,7 @@ logbookupload_SERVER <- function(id){
         logbookInputsInfo$yearColumn <- input$logbook_year
         logbookInputsInfo$effortColumn <- input$logbook_effort
         logbookInputsInfo$sampleUnits <- input$logbook_sampleunit
-        logbookInputsInfo$aggregationColumn <- input$logbook_aggregationcolumn
+        logbookInputsInfo$aggregationColumn <- if (input$logbook_aggregationcolumn == "NA") NA else input$logbook_aggregationcolumn
       })
       
       #-----------------------------

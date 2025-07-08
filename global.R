@@ -22,6 +22,7 @@ library(shinyalert)
 #-------------------------
 library(DT)
 library(readr)
+library(BycatchEstimator)
 
 
 #------------------------------------------
