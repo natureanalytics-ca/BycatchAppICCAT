@@ -16,7 +16,14 @@ landingpage_UI <- function(id){
       title = "Welcome to the BycatchEstimator toolkit",
       fluidRow(
         column(12,
-               "Add instructions for app here")
+               p("Add instructions for app here"),
+               
+               tags$img(
+                 src = "workflow_diagram.png",  # Replace with your actual PNG file name
+                 width = "50%",          # Or a fixed value like "300px"
+                 alt = "Workflow")    
+               
+       )
       )
     )
     

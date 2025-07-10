@@ -9,4 +9,6 @@ server <- function(input, output, session) {
   datachecks_SERVER("datachecks",observerdataInput = reactive(upload_observer_SERVER),
                     logbookdataInput = reactive(upload_logbook_SERVER) )
   
+  help_SERVER("help_module")
+  
 }
