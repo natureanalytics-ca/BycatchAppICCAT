@@ -46,34 +46,30 @@ observerupload_UI <- function(id){
           timelineItem(
             title = "How is your data set structured?",
             icon = icon("file"),
-            prettyRadioButtons(
-              inputId = ns("header"),
-              label = "Does your data have a header row?",
-              choiceNames = c("Yes", "No"),
-              choiceValues = c(TRUE, FALSE),
-              icon = icon("check"),
-              animation = "jelly",
-              inline=TRUE,
-              status = "default"
-            ),
-            # pickerInput(
-            #   inputId = ns("observer_catch"),
-            #   label = "Select column that contains catch",
-            #   choices = c("X1","X2","X3","X4"),
-            #   width = '100%'
+            
+            # prettyRadioButtons(
+            #   inputId = ns("header"),
+            #   label = "Does your data have a header row?",
+            #   choiceNames = c("Yes", "No"),
+            #   choiceValues = c(TRUE, FALSE),
+            #   icon = icon("check"),
+            #   animation = "jelly",
+            #   inline=TRUE,
+            #   status = "default"
             # ),
+
             uiOutput(ns("observer_catch_ui")),
             
            pickerInput(
               inputId = ns("observer_catchunits"),
               label = "Units of catch",
-              choices = c("Numbers", "Weight in kg","Weight in tonnes"),
+              choices = c("Numbers", "Weight in kg","Weight in tonnes","Other"),
               width = '100%'
             ),
            pickerInput(
               inputId = ns("observer_catchtype"),
               label = "What is the catch type?",
-              choices = c("Dead discards", "Live discards","Discards","Bycatch"), #add more catch types?
+              choices = c("Dead discards", "Live discards","Discards","Bycatch","Other"), 
               width = '100%'
             ),
            
@@ -154,7 +150,7 @@ observerupload_SERVER <- function(id){
       ### dynamic pickerInputs that read data set
       #CatchColumn
       output$observer_catch_ui <- renderUI({
-        req(previewObserverObj())
+        #req(previewObserverObj())
         pickerInput(
           inputId = ns("observer_catch"),
           label = "Select column that contains catch",

@@ -65,7 +65,7 @@
       "RemoteUsername": "ebabcock",
       "RemoteRepo": "BycatchEstimator",
       "RemoteRef": "main",
-      "RemoteSha": "d5f443358eb343f32b3aa5c87a940992f9f6d5f4"
+      "RemoteSha": "98b02a0362f98cc8ad935a41de0524b793961c80"
     },
     "DBI": {
       "Package": "DBI",

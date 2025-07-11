@@ -42,16 +42,17 @@ logbookupload_UI <- function(id){
           timelineItem(
             title = "How is your data set structured?",
             icon = icon("file"),
-            prettyRadioButtons(
-              inputId = ns("header"),
-              label = "Does your data have a header row?",
-              choiceNames = c("Yes", "No"),
-              choiceValues = c(TRUE, FALSE),
-              icon = icon("check"),
-              animation = "jelly",
-              inline=TRUE,
-              status = "default"
-            ),
+            
+            # prettyRadioButtons(
+            #   inputId = ns("header"),
+            #   label = "Does your data have a header row?",
+            #   choiceNames = c("Yes", "No"),
+            #   choiceValues = c(TRUE, FALSE),
+            #   icon = icon("check"),
+            #   animation = "jelly",
+            #   inline=TRUE,
+            #   status = "default"
+            # ),
             
             uiOutput(ns("logbook_year_ui")),
             

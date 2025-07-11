@@ -106,7 +106,7 @@ datachecks_SERVER <- function(id, observerdataInput = reactive(NULL), logbookdat
         pickerInput(
           inputId = ns("numeric_variables"),
           label = "Specify numeric variables",
-          choices = names(observerdataInput()$dt),
+          choices = c(NA, names(observerdataInput()$dt)),
           width = '100%',
           options = pickerOptions(
             actionsBox = FALSE,
