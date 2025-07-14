@@ -28,3 +28,18 @@
 .progress-bar-customAbove {
 	background-color: #9AD0C5;
 }
+
+/*Remove time icon from bs4Dash timeline*/
+.time {
+  opacity: 0!important;
+}
+
+.timeline-footer{
+  padding: 0!important;
+}
+
+/*ShinyWidgets buttons - manual change using 'royal' option*/
+.bttn-royal {
+    color: #343a40!important;
+    background-color: #fcfcfc!important;
+}

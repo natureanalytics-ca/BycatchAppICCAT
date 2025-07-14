@@ -13,7 +13,7 @@ help_UI <- function(id){
   
     box(
       collapsible = TRUE,
-      collapsed = TRUE,
+      collapsed = FALSE,
       width = 12,
       title = "Observer data - example data set",
       
@@ -21,7 +21,7 @@ help_UI <- function(id){
     ),
     box(
       collapsible = TRUE,
-      collapsed = TRUE,
+      collapsed = FALSE,
       width = 12,
       title = "Logbook data - example data set",
       
@@ -29,7 +29,7 @@ help_UI <- function(id){
     ),
     box(
       collapsible = TRUE,
-      collapsed = TRUE,
+      collapsed = FALSE,
       width = 12,
       title = "Online resources",
       tags$ul(

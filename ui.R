@@ -33,20 +33,7 @@ sidebar <- dashboardSidebar(
   #---------------
   minified = TRUE,
   collapsed = FALSE,
-
-  
-  #----------------
-  #NA footer
-  #----------------
-  shiny::tags$div(
-    style = "position: absolute; bottom: 4px;", 
-    tags$a(href="https://natureanalytics.ca", 
-           tags$img(src="NA.png",
-                    height=60,
-                    width=60,
-           ),
-           target="_blank")
-  ),
+  status = "primary",
   
   #-------------
   #Items
@@ -69,13 +56,26 @@ sidebar <- dashboardSidebar(
       tabName = "upload",
       text = "Data upload",
       icon = icon("paperclip"),
+      startExpanded = TRUE,
       menuSubItem(
-        text = tags$small("Observer data"),
+        #text = tags$small("Observer data"),
+        text = tagList(
+          dashboardBadge("Step 1", color = "primary", position = "left"),
+          HTML("&nbsp;"),
+          tags$small("Observer data")
+        ),
         tabName = "Observer_upload",
+        icon = NULL
       ),
       menuSubItem(
-        text = tags$small("Logbook data"),
-        tabName = "Logbook_upload"
+        #text = tags$small("Logbook data"),
+        text = tagList(
+          dashboardBadge("Step 2", color = "primary", position = "left"),
+          HTML("&nbsp;"),
+          tags$small("Logbook data")
+        ),
+        tabName = "Logbook_upload",
+        icon = NULL
       )
     ),
    menuItem(
@@ -109,9 +109,7 @@ body<-dashboardBody(
   #----------------------
   use_theme(inputTheme),
   inputSliderSkin,
-  tags$head(
-    tags$link(rel = "stylesheet", type = "text/css", href = "main.css")
-  ),
+  includeCSS("www/main.css"),
   
   #load modules here as tabItems
   tabItems(
@@ -138,6 +136,21 @@ body<-dashboardBody(
   )
 )
 
+#-----------------------------------------------------
+#Footer - For client use (turned off in UI by default)
+#-----------------------------------------------------
+footer = dashboardFooter(
+  left =  HTML("<div style='padding-left: 10px;'>&copy ICCAT</div>"),
+  
+  right =
+    tags$a(href="https://natureanalytics.ca",
+           tags$image(src="NA.png",
+                      height=32,
+                      
+           ),
+           target="_blank")
+)
+
 #-----------------
 #Dashboard Page
 #-----------------
@@ -146,8 +159,9 @@ bs4Dash::dashboardPage(
   header = header,
   sidebar = sidebar,
   body = body,
-  #footer = footer,
-  dark = FALSE
+  footer = footer,
+  dark = NULL,
+  help = NULL
 )
 
 

@@ -42,11 +42,11 @@ inputTheme <- fresh::create_theme(
   ),
   
   #Color contrast
-  bs4dash_yiq(
-    contrasted_threshold = 10,
-    text_dark = "#FFF", #allows switch to white if not enough contrast
-    text_light = "#272c30" #allow swicth to dark grey if not enough contrast
-  ),
+  # bs4dash_yiq(
+  #   contrasted_threshold = 10,
+  #   text_dark = "#FFF", #allows switch to white if not enough contrast
+  #   text_light = "#272c30" #allow swicth to dark grey if not enough contrast
+  # ),
   
   #Layout options
   bs4dash_layout(
