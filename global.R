@@ -64,20 +64,37 @@ inputTheme <- fresh::create_theme(
   ),
   
   #Sidebar skin
+  # bs4dash_sidebar_light(
+  #   bg = NULL,
+  #   hover_bg = NULL,
+  #   color = NULL,
+  #   hover_color = NULL,
+  #   active_color = NULL,
+  #   submenu_bg = NULL,
+  #   submenu_color = NULL,
+  #   submenu_hover_color = NULL,
+  #   submenu_hover_bg = NULL,
+  #   submenu_active_color = NULL,
+  #   submenu_active_bg = NULL,
+  #   header_color = NULL
+  # ),
+  
+  #Sidebar skin
   bs4dash_sidebar_light(
-    bg = NULL,
-    hover_bg = NULL,
-    color = NULL,
-    hover_color = NULL,
-    active_color = NULL,
-    submenu_bg = NULL,
-    submenu_color = NULL,
-    submenu_hover_color = NULL,
-    submenu_hover_bg = NULL,
-    submenu_active_color = NULL,
-    submenu_active_bg = NULL,
-    header_color = NULL
+    bg = "#343a40",
+    hover_bg = "#343a40",
+    color = "#c2c7d0",
+    hover_color = "#FFFFFF",
+    active_color = "#c2c7d0",
+    submenu_color = "#c2c7d0",
+    submenu_hover_color = "#FFFFFF",
+    submenu_active_color = "#FFFFFF",
+    submenu_bg = "#343a40",
+    submenu_hover_bg = "#343a40",
+    submenu_active_bg = "#343a40",
+    header_color = "#343a40"
   ),
+  
   
   #Status custom colors
   bs4dash_status(
