@@ -12,23 +12,52 @@ help_UI <- function(id){
   tagList(
   
     box(
-      collapsible = TRUE,
+      collapsible = FALSE,
       collapsed = FALSE,
       width = 12,
       title = "Observer data - example data set",
+      tagList(
+      selectInput(ns("exampleObserverData"),
+                  label = "Select an example data set",
+                  choices = c("Simulated data" = "observerdata_example",
+                              "LLSIM data" = "LLSIM_observerdata_example")
+                  ),
       
-      downloadBttn(ns("download_observerdata_example"),"Download")
-    ),
+      downloadButton(ns("download_observerdata_example"),"Download"),
+      div(style = "margin-top: 20px"),
+      box(
+        width = 12,
+        title = "Example observer data preview",
+        collapsible = TRUE,
+        collapsed = TRUE,
+        DTOutput(ns("exampleObserverDataDT"))
+      )
+    )),
+    
     box(
-      collapsible = TRUE,
+      collapsible = FALSE,
       collapsed = FALSE,
       width = 12,
       title = "Logbook data - example data set",
-      
-      downloadBttn(ns("download_logbookdata_example"),"Download")
-    ),
+      tagList(
+      selectInput(ns("exampleLogbookData"),
+                  label = "Select an example data set",
+                  choices = c("Simulated data" = "logbookdata_example",
+                              "LLSIM data" = "LLSIM_logbookdata_example")
+      ),
+      downloadButton(ns("download_logbookdata_example"),"Download"),
+      div(style = "margin-top: 20px"),
+      box(
+        width = 12,
+        title = "Example logbook data preview",
+        collapsible = TRUE,
+        collapsed = TRUE,
+        DTOutput(ns("exampleLogbookDataDT"))
+      )
+    )),
+    
     box(
-      collapsible = TRUE,
+      collapsible = FALSE,
       collapsed = FALSE,
       width = 12,
       title = "Online resources",
@@ -55,7 +84,7 @@ help_SERVER <- function(id){
       observerData_example <- reactive({
         dt<-tryCatch(
           {
-            read.csv(paste0("www/example_datasets/observerdata_example.csv"), header = TRUE)
+            read.csv(paste0("www/example_datasets/",input$exampleObserverData,".csv"), header = TRUE)
           },
           error = function(e) {
             NULL
@@ -68,7 +97,7 @@ help_SERVER <- function(id){
       logbookData_example <- reactive({
         dt<-tryCatch(
           {
-            read.csv(paste0("www/example_datasets/logbookdata_example.csv"), header = TRUE)
+            read.csv(paste0("www/example_datasets/",input$exampleLogbookData,".csv"), header = TRUE)
           },
           error = function(e) {
             NULL
@@ -78,7 +107,9 @@ help_SERVER <- function(id){
       })
       
       output$download_observerdata_example <- downloadHandler(
-        filename = "observerdata_example.csv",
+        filename = function(){
+          paste0(input$exampleObserverData, ".csv")
+          },
         content = function(file){
           write.csv(observerData_example(), file, row.names = FALSE)
         }
@@ -86,13 +117,26 @@ help_SERVER <- function(id){
       )
       
       output$download_logbookdata_example <- downloadHandler(
-        filename = "logbookdata_example.csv",
+        filename = function(){
+          paste0(input$exampleLogbookData, ".csv")
+        },
         content = function(file){
           write.csv(logbookData_example(), file, row.names = FALSE)
         }
         
       )
   
+      output$exampleObserverDataDT <- renderDT({
+        req(observerData_example())
+        datatable(observerData_example(),
+                  rownames=FALSE)
+      })
+      
+      output$exampleLogbookDataDT <- renderDT({
+        req(logbookData_example())
+        datatable(logbookData_example(),
+                  rownames=FALSE)
+      })
 
     }) #close function moduleServer
 } #close help_SERVER

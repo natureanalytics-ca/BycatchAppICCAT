@@ -91,7 +91,7 @@ datachecks_SERVER <- function(id, observerdataInput = reactive(NULL), logbookdat
         pickerInput(
           inputId = ns("factor_variables"),
           label = "Specify factor variables",
-          choices = names(observerdataInput()$dt),
+          choices = unique(c(names(observerdataInput()$dt),names(logbookdataInput()$dt))),
           width = '100%',
           options = pickerOptions(
             actionsBox = FALSE,
@@ -106,7 +106,7 @@ datachecks_SERVER <- function(id, observerdataInput = reactive(NULL), logbookdat
         pickerInput(
           inputId = ns("numeric_variables"),
           label = "Specify numeric variables",
-          choices = c(NA, names(observerdataInput()$dt)),
+          choices = unique(c(names(observerdataInput()$dt),names(logbookdataInput()$dt))),
           width = '100%',
           options = pickerOptions(
             actionsBox = FALSE,
@@ -141,9 +141,9 @@ datachecks_SERVER <- function(id, observerdataInput = reactive(NULL), logbookdat
           catchUnit = observerdataInput()$catchUnits,
           catchType = observerdataInput()$catchType,
           logNum = logbookdataInput()$aggregationColumn,
-          sampleUnit = observerdataInput()$sampleUnits,
+          sampleUnit = logbookdataInput()$sampleUnits,
           factorVariables = input$factor_variables,
-          numericVariables = input$numeric_variables,
+          numericVariables = if (input$numeric_variables == "Nothing selected") NA else input$numeric_variables,
           baseDir = outDir,
           runName = input$datachecks_name,
           runDescription = input$datachecks_name,
@@ -181,7 +181,7 @@ datachecks_SERVER <- function(id, observerdataInput = reactive(NULL), logbookdat
         contentType = "application/zip"
       )
       
-      # observe({
+      #observe({
       #   #observerdataInput()$dt
       #   #logbookdataInput()$dt
       #   print(class(observerdataInput()$dt$Catch))
@@ -189,7 +189,8 @@ datachecks_SERVER <- function(id, observerdataInput = reactive(NULL), logbookdat
       #   print(class(observerdataInput()$catchColumn))
       #   print(class(observerdataInput()$effortColumn))
       #   print(logbookdataInput()$aggregationColumn)
-      # })
+      #print(unique(c(names(observerdataInput()$dt),names(logbookdataInput()$dt))))
+      #})
 
     })
 }
