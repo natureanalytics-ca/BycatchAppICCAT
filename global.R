@@ -16,6 +16,8 @@ library(shinycssloaders)
 library(fresh)
 library(shinyalert)
 
+# Increase upload limit to 100 MB
+options(shiny.maxRequestSize = 100 * 1024^2)
 
 #-------------------------
 #App specific libraries
