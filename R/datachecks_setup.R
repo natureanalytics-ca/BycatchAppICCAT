@@ -792,7 +792,7 @@ datachecksSetup_SERVER <- function(id, observerdataInput = reactive(NULL), logbo
               catchType = input$observer_catchtype, #Yes
               logNum = if (input$logbook_aggregationcolumn == "NA") NA else input$logbook_aggregationcolumn, #Yes
               sampleUnit = input$observer_sampleunit, #Yes
-              factorVariables = unique(c(bldFactor$observer, input$observer_year)), #Yes
+              factorVariables = unique(c(bldFactor$observer)), # input$observer_year)), #Yes
               numericVariables = unique(bldNumeric$observer), #Yes
               baseDir = outDir, #Yes
               runName = input$datachecks_name,  #Yes
