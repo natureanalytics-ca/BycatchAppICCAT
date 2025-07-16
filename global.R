@@ -23,7 +23,7 @@ library(shinyalert)
 library(DT)
 library(readr)
 library(BycatchEstimator)
-
+library(dplyr)
 
 #------------------------------------------
 # Setup theme (fresh library)
@@ -83,10 +83,10 @@ inputTheme <- fresh::create_theme(
   bs4dash_sidebar_light(
     bg = "#343a40",
     hover_bg = "#343a40",
-    color = "#c2c7d0",
+    color = "#ADB5BD",
     hover_color = "#FFFFFF",
-    active_color = "#c2c7d0",
-    submenu_color = "#c2c7d0",
+    active_color = "#ADB5BD",
+    submenu_color = "#ADB5BD",
     submenu_hover_color = "#FFFFFF",
     submenu_active_color = "#FFFFFF",
     submenu_bg = "#343a40",
@@ -169,6 +169,20 @@ inputSliderSkin<-chooseSliderSkin(
   skin = "Modern",
   color = "red" #Colors work with: 'Shiny', "Flat', 'Modern', 'HTML5'
 )
+
+#-----------------------------
+#Recalculating
+#----------------------------
+
+#shinycssloaders, attached to re-calc of individual plots, graphics
+options(spinner.color="black", spinner.type=4)
+
+#Waiter, freezes entire window while something loads w/ spinner. i.e. loading a file from server
+waitScreen <- Waiter$new(html = tagList(
+  spin_loaders(id=19, color = "black")
+),
+color = transparent(alpha = 0.2),
+fadeout = TRUE)
 
 #-----------------------------------------------------
 #Footer - For client use (turned off in UI by default)

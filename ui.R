@@ -5,15 +5,6 @@
 #------------------------
 
 header <- dashboardHeader(
-  
-  # #Branding for the app - client logo, link to website, etc.
-  # title = dashboardBrand(
-  #   title = "BycatchEstimator",
-  #   color = "primary",
-  #   href = "https://github.com/ebabcock/BycatchEstimator",
-  #   image = "imgfile.png",
-  # ),
-  # 
   #Icon to open/close sidebar
   sidebarIcon = icon("compress"),
   
@@ -58,7 +49,6 @@ sidebar <- dashboardSidebar(
       icon = icon("paperclip"),
       startExpanded = TRUE,
       menuSubItem(
-        #text = tags$small("Observer data"),
         text = tagList(
           dashboardBadge("Step 1", color = "primary", position = "left"),
           HTML("&nbsp;"),
@@ -68,7 +58,6 @@ sidebar <- dashboardSidebar(
         icon = NULL
       ),
       menuSubItem(
-        #text = tags$small("Logbook data"),
         text = tagList(
           dashboardBadge("Step 2", color = "primary", position = "left"),
           HTML("&nbsp;"),
@@ -81,7 +70,25 @@ sidebar <- dashboardSidebar(
    menuItem(
      tabName = "checks",
      text = "Data checks",
-     icon = icon("file-lines")
+     icon = icon("file-lines"),
+     menuSubItem(
+       text = tagList(
+         dashboardBadge("Step 1", color = "primary", position = "left"),
+         HTML("&nbsp;"),
+         tags$small("Setup")
+       ),
+       tabName = "setup_checks",
+       icon = NULL
+     ),
+     menuSubItem(
+       text = tagList(
+         dashboardBadge("Step 2", color = "primary", position = "left"),
+         HTML("&nbsp;"),
+         tags$small("Results")
+       ),
+       tabName = "results_checks",
+       icon = NULL
+     )
    ),
    menuItem(
      tabName = "help",
@@ -102,7 +109,7 @@ body<-dashboardBody(
   #Call to
   #---------------
   useShinyjs(),
-  
+  useWaiter(),
   
   #----------------------
   #Read styling items
@@ -126,8 +133,12 @@ body<-dashboardBody(
       logbookupload_UI("logbookdata_upload")
     ),
     tabItem(
-      tabName = "checks",
-      datachecks_UI("datachecks")
+      tabName = "setup_checks",
+      datachecksSetup_UI("datachecks_setup")
+    ),
+    tabItem(
+      tabName = "results_checks",
+      datachecksResults_UI("datachecks_results")
     ),
     tabItem(
       tabName = "help",

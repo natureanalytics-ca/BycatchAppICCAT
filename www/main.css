@@ -12,7 +12,7 @@
   
   /*Hyperlink color*/
   a {
-  	color: blue ;
+  	color: #007bff ;
   }
    
  /*boxPad class*/
@@ -41,5 +41,23 @@
 /*ShinyWidgets buttons - manual change using 'royal' option*/
 .bttn-royal {
     color: #343a40!important;
-    background-color: #fcfcfc!important;
+    background-color: #fcfcfc00!important;
 }
+
+
+/*BS4Dash Tabsetpanel UI styling*/
+#datachecks_setup-inputUIPanel a.nav-link.active {
+   color: #343a40;
+   background:  #ADB5BD;
+}
+
+#datachecks_setup-inputUIPanel .nav-link {
+  color: #ADB5BD;
+  font-style: bold;
+}
+
+#datachecks_setup-inputUIPanel a:hover {
+  color: #343a40;
+  font-style: bold;
+}
+
