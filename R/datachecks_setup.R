@@ -710,8 +710,7 @@ datachecksSetup_SERVER <- function(id, observerdataInput = reactive(NULL), logbo
       resultsDir <- reactiveValues(output = NULL)
 
       observeEvent(input$run_datachecks, {
-        print(input$spp_scientificname)
-        
+
         if(
           is.null(logbookdataInput()$dt) ||
           is.null(observerdataInput()$dt) ||
@@ -761,7 +760,6 @@ datachecksSetup_SERVER <- function(id, observerdataInput = reactive(NULL), logbo
 
           #Re-name logbook numeric, if applicable
           nm<-names(numericNames)
-          print(nm)
           bldNumeric <-data.frame()
           for (i in nm){
             if(!is.null(numericNames[[i]])){
