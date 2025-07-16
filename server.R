@@ -21,7 +21,7 @@ server <- function(input, output, session) {
                                 "datachecks_results",
                                  resultsDir = reactive(setup_datachecks_SERVER)
                                 )
-                                                        
+  
   #------------------
   #Help module
   #------------------

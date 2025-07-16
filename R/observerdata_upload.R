@@ -153,6 +153,11 @@ observerupload_SERVER <- function(id){
     function(input, output, session){
       ns <- session$ns
       
+      #---------------------------
+      #Input contraints on nchar
+      #---------------------------
+      shinyjs::runjs("$('#observerdata_upload-observerdata_title').attr('maxlength', 50)")      
+      
       #Holds the file uploaded by user
       previewObserverdata<-reactiveVal()
       

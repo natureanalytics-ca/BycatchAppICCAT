@@ -44,7 +44,6 @@ datachecksResults_UI <- function(id){
     
     br(),
     uiOutput(ns("download_ui"))
- 
   )
   
 }

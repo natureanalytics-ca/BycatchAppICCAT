@@ -149,6 +149,11 @@ logbookupload_SERVER <- function(id){
     function(input, output, session){
       ns <- session$ns
       
+      #---------------------------
+      #Input contraints on nchar
+      #---------------------------
+      shinyjs::runjs("$('#logbookdata_upload-logbookdata_title').attr('maxlength', 50)")
+      
       #Holds the file uploaded by user
       previewLogbookdata<-reactiveVal()
       
