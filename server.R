@@ -22,10 +22,6 @@ server <- function(input, output, session) {
                                  resultsDir = reactive(setup_datachecks_SERVER)
                                 )
                                                         
-  
-  #datachecks_SERVER("datachecks",observerdataInput = reactive(upload_observer_SERVER),
-  #                  logbookdataInput = reactive(upload_logbook_SERVER) )
-  
   #------------------
   #Help module
   #------------------

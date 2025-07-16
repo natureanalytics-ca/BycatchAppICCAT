@@ -112,6 +112,13 @@ datachecksSetup_SERVER <- function(id, observerdataInput = reactive(NULL), logbo
     function(input, output, session){
       ns <- session$ns
       
+      #---------------------------
+      #Input contraints on nchar
+      #---------------------------
+      shinyjs::runjs("$('#datachecks_setup-spp_name').attr('maxlength', 10)")
+      shinyjs::runjs("$('#datachecks_setup-spp_scientificname').attr('maxlength', 10)")
+      shinyjs::runjs("$('#datachecks_setup-datachecks_name').attr('maxlength', 10)")
+      
       #-----------------------------
       #Reset when new dataset loaded
       #-----------------------------
@@ -198,11 +205,11 @@ datachecksSetup_SERVER <- function(id, observerdataInput = reactive(NULL), logbo
               fluidRow(
                 column(
                   6,
-                  div(icon("binoculars"), HTML("&nbsp;"), tags$strong(tags$em("Observer data selections"))),
+                  div(icon("binoculars"), HTML("&nbsp;"), tags$strong(tags$em("Observer data"))),
                 ),
                 column(
                   6,
-                  div(icon("ship"), HTML("&nbsp;"), tags$strong(tags$em("Corresponding logbook selections"))),
+                  div(icon("ship"), HTML("&nbsp;"), tags$strong(tags$em("Corresponding logbook data"))),
                 )
               ),
               div(
@@ -336,7 +343,7 @@ datachecksSetup_SERVER <- function(id, observerdataInput = reactive(NULL), logbo
                       "Guidance add here."
                     ))
                 ),
-                "Select factor variables (optional)"
+                div("Select factor variables", div("*", style = "display: inline; color: red;"))
               ),
               icon = icon("clipboard-check"),
               fluidRow(
@@ -344,7 +351,7 @@ datachecksSetup_SERVER <- function(id, observerdataInput = reactive(NULL), logbo
                   12,
                   actionBttn(
                     inputId = ns("addFactor"),
-                    label = "Add factor"
+                    label = "Add variable"
                   ),
                   tags$div(id = ns("factor_insertUI")),
                   div(
@@ -378,7 +385,7 @@ datachecksSetup_SERVER <- function(id, observerdataInput = reactive(NULL), logbo
                   12,
                   actionBttn(
                     inputId = ns("addNumeric"),
-                    label = "Add numeric variable"
+                    label = "Add variable"
                   ),
                   tags$div(id = ns("numeric_insertUI")),
                   div(
@@ -426,7 +433,7 @@ datachecksSetup_SERVER <- function(id, observerdataInput = reactive(NULL), logbo
             ),
             div(
               style = "margin: 8px;",
-              tags$strong(tags$em("Select corresponding factors"))
+              tags$strong(tags$em("Select corresponding variables"))
             ),
             
             fluidRow(
@@ -434,7 +441,7 @@ datachecksSetup_SERVER <- function(id, observerdataInput = reactive(NULL), logbo
                 6,
                 pickerInput(
                   inputId = ns(picker1ID),
-                  label = div(icon("binoculars"), HTML("&nbsp;"), tags$strong("Observer data factor")),
+                  label = div(icon("binoculars"), HTML("&nbsp;"), tags$strong("Observer data")),
                   choices = names(observerdataInput()$dt),
                   width = '100%',
                   options = pickerOptions(
@@ -449,7 +456,7 @@ datachecksSetup_SERVER <- function(id, observerdataInput = reactive(NULL), logbo
                 6,
                 pickerInput(
                   inputId = ns(picker2ID),
-                  label = div(icon("ship"), HTML("&nbsp;"), tags$strong("Logbook data factor")),
+                  label = div(icon("ship"), HTML("&nbsp;"), tags$strong("Logbook data")),
                   choices = names(logbookdataInput()$dt),
                   width = '100%',
                   options = pickerOptions(
@@ -500,7 +507,7 @@ datachecksSetup_SERVER <- function(id, observerdataInput = reactive(NULL), logbo
                       "$(this.api().table().header()).css({'background-color': '#ADB5BD', 'color': '#343a40'});",
                       "}")
                   ),
-                  colnames=c("Observer factor", "Logbook factor", "Logbook factor renaming"),
+                  colnames=c("Observer variable", "Logbook variable", "Logbook renaming"),
                   rownames=FALSE,
                   selection = 'none',
                   caption = tags$strong(tags$em("Selected pairings"))
@@ -541,7 +548,7 @@ datachecksSetup_SERVER <- function(id, observerdataInput = reactive(NULL), logbo
             ),
             div(
               style = "margin: 8px;",
-              tags$strong(tags$em("Select corresponding numeric variable"))
+              tags$strong(tags$em("Select corresponding variables"))
             ),
             
             fluidRow(
@@ -549,7 +556,7 @@ datachecksSetup_SERVER <- function(id, observerdataInput = reactive(NULL), logbo
                 6,
                 pickerInput(
                   inputId = ns(picker1ID),
-                  label = div(icon("binoculars"), HTML("&nbsp;"), tags$strong("Observer data factor")),
+                  label = div(icon("binoculars"), HTML("&nbsp;"), tags$strong("Observer data")),
                   choices = names(observerdataInput()$dt),
                   width = '100%',
                   options = pickerOptions(
@@ -564,7 +571,7 @@ datachecksSetup_SERVER <- function(id, observerdataInput = reactive(NULL), logbo
                 6,
                 pickerInput(
                   inputId = ns(picker2ID),
-                  label = div(icon("ship"), HTML("&nbsp;"), tags$strong("Logbook data factor")),
+                  label = div(icon("ship"), HTML("&nbsp;"), tags$strong("Logbook data")),
                   choices = names(logbookdataInput()$dt),
                   width = '100%',
                   options = pickerOptions(
@@ -615,7 +622,7 @@ datachecksSetup_SERVER <- function(id, observerdataInput = reactive(NULL), logbo
                       "$(this.api().table().header()).css({'background-color': '#ADB5BD', 'color': '#343a40'});",
                       "}")
                   ),
-                  colnames=c("Observer data variable", "Logbook variable", "Logbook variable renaming"),
+                  colnames=c("Observer variable", "Logbook variable", "Logbook renaming"),
                   rownames=FALSE,
                   selection = 'none',
                   caption = tags$strong(tags$em("Selected pairings"))
@@ -691,6 +698,12 @@ datachecksSetup_SERVER <- function(id, observerdataInput = reactive(NULL), logbo
               fluidRow(
                 column(
                   12,
+                  uiOutput(ns("checksPreview")),
+                )
+              ),
+              fluidRow(
+                column(
+                  12,
                   div(
                     style = "display: flex; align-items: center; justify-content: center;",
                     actionBttn(
@@ -706,11 +719,213 @@ datachecksSetup_SERVER <- function(id, observerdataInput = reactive(NULL), logbo
         )
       })
       
+      ##Summary of input selections
+      output$checksPreview <- renderUI({
+        
+        #Get factor names
+        nm<-names(factorNames)
+        bldFactor <-data.frame()
+        for (i in nm){
+          if(!is.null(factorNames[[i]])){
+            bldFactor<-rbind(bldFactor, 
+                       list(
+                         id=i, 
+                         observer = factorNames[[i]][1],
+                         logbook = factorNames[[i]][2]
+                       )
+            )
+          }
+        }
+
+        #Get numeric names
+        nm<-names(numericNames)
+        bldNumeric <-data.frame()
+        for (i in nm){
+          if(!is.null(numericNames[[i]])){
+            bldNumeric<-rbind(bldNumeric, 
+                             list(
+                               id=i, 
+                               observer = numericNames[[i]][1],
+                               logbook = numericNames[[i]][2]
+                             )
+            )
+          }
+        }
+
+        tagList(
+          tags$strong(tags$em("Input summary")),
+          div(
+            style = "margin: 10px 0px; border: 1px solid #ADB5BD; border-radius: 5px; padding: 10px;",
+            fluidRow(
+              column(
+                4,
+                div(icon("clipboard-check"), HTML("&nbsp;"), tags$strong(tags$em("Input"))),
+              ),
+              column(
+                4,
+                div(icon("binoculars"), HTML("&nbsp;"), tags$strong(tags$em("Observer data"))),
+              ),
+              column(
+                4,
+                div(icon("ship"), HTML("&nbsp;"), tags$strong(tags$em("Logbook data"))),
+              )
+            ),
+            fluidRow(
+              column(
+                4,
+                tags$strong("Title:")
+              ),
+              column(
+                4,
+                div(style = "color: #007bff;", observerdataInput()$title)
+              ),
+              column(
+                4,
+                div(style = "display: inline; color: #007bff;", logbookdataInput()$title)
+              )
+            ),
+            fluidRow(
+              column(
+                4,
+                tags$strong("Catch:")
+              ),
+              column(
+                4,
+                div(style = "color: #007bff;", input$observer_catch)
+              ),
+              column(
+                4,
+              )
+            ),
+            fluidRow(
+              column(
+                4,
+                tags$strong("Units of catch:")
+              ),
+              column(
+                4,
+                div(style = "color: #007bff;", input$observer_catchunits)
+              ),
+              column(
+                4,
+              )
+            ),
+            fluidRow(
+              column(
+                4,
+                tags$strong("Catch type:")
+              ),
+              column(
+                4,
+                div(style = "color: #007bff;", input$observer_catchtype)
+              ),
+              column(
+                4,
+              )
+            ),
+            fluidRow(
+              column(
+                4,
+                tags$strong("Year:")
+              ),
+              column(
+                4,
+                div(style = "color: #007bff;", input$observer_year)
+              ),
+              column(
+                4,
+                if(input$observer_year == input$logbook_year) {div(style = "color: #007bff;", input$logbook_year)},
+                if(input$observer_year != input$logbook_year) {div(style = "color: #007bff;", input$logbook_year, icon("arrow-right"), input$observer_year)}
+              )
+            ),
+            fluidRow(
+              column(
+                4,
+                tags$strong("Effort:")
+              ),
+              column(
+                4,
+                div(style = "color: #007bff;", input$observer_effort)
+              ),
+              column(
+                4,
+                div(style = "color: #007bff;", input$logbook_effort)
+              )
+            ),
+            fluidRow(
+              column(
+                4,
+                tags$strong("Sample unit:")
+              ),
+              column(
+                4,
+                div(style = "color: #007bff;", input$observer_sampleunit)
+              ),
+              column(
+                4,
+                div(style = "color: #007bff;", input$logbook_sampleunit)
+              )
+            ),
+            fluidRow(
+              column(
+                4,
+                tags$strong("Factor variables:")
+              ),
+              column(
+                4,
+                if(NROW(bldFactor) > 0){
+                  lapply(1:NROW(bldFactor), FUN=function(x){
+                    div(style = "display: block; color: #007bff;", bldFactor$observer[x])
+                  })
+                }
+              ),
+              column(
+                4,
+                if(NROW(bldFactor) > 0){
+                  lapply(1:NROW(bldFactor), FUN=function(x){
+                    if(bldFactor$observer[x] == bldFactor$logbook[x]) return(div(style = "color: #007bff;", bldFactor$logbook[x]))
+                    if(bldFactor$observer[x] != bldFactor$logbook[x]) return(div(style = "color: #007bff;", bldFactor$logbook[x], icon("arrow-right"), bldFactor$observer[x]))
+                  })
+                }
+              )
+            ),
+            fluidRow(
+              column(
+                4,
+                tags$strong("Numeric variables:")
+              ),
+              column(
+                4,
+                if(NROW(bldNumeric) > 0){
+                  lapply(1:NROW(bldNumeric), FUN=function(x){
+                    div(style = "display: block; color: #007bff;", bldNumeric$observer[x])
+                  })
+                }
+              ),
+              column(
+                4,
+                if(NROW(bldNumeric) > 0){
+                  lapply(1:NROW(bldNumeric), FUN=function(x){
+                    if(bldNumeric$observer[x] == bldNumeric$logbook[x]) return(div(style = "color: #007bff;", bldNumeric$logbook[x]))
+                    if(bldNumeric$observer[x] != bldNumeric$logbook[x]) return(div(style = "color: #007bff;", bldNumeric$logbook[x], icon("arrow-right"), bldNumeric$observer[x]))
+                  })
+                }
+              )
+            )
+          )
+        )
+      })
+      
+      
+      
       ## Button for running data checks
       resultsDir <- reactiveValues(output = NULL)
 
       observeEvent(input$run_datachecks, {
 
+        #Re-name logbook factors, if applicable
+        factorCheck <- ifelse(NROW(names(factorNames)) > 0, sum(sapply(names(factorNames), function(x){!is.null(factorNames[[x]])})), 0)
+      
         if(
           is.null(logbookdataInput()$dt) ||
           is.null(observerdataInput()$dt) ||
@@ -722,7 +937,8 @@ datachecksSetup_SERVER <- function(id, observerdataInput = reactive(NULL), logbo
           is.null(input$observer_catch) ||
           nchar(input$spp_scientificname) == 0 ||
           nchar(input$spp_name) == 0 ||
-          nchar(input$datachecks_name) == 0
+          nchar(input$datachecks_name) == 0 ||
+          factorCheck < 1
         ){
           showModal(
             modalDialog(
@@ -778,7 +994,8 @@ datachecksSetup_SERVER <- function(id, observerdataInput = reactive(NULL), logbo
           # Create temp dir to hold output
           outDir <- tempfile("bycatch_output_")
           dir.create(outDir)
-
+          print(paste("Dir exists:", dir.exists(outDir)))
+          print(list.files(outDir))
           # Run bycatchSetup function
           tryCatch({ # for debugging
             setupObj <- BycatchEstimator::bycatchSetup(
@@ -798,7 +1015,7 @@ datachecksSetup_SERVER <- function(id, observerdataInput = reactive(NULL), logbo
               runName = input$datachecks_name,  #Yes
               runDescription = input$datachecks_name, #Yes
               common = input$spp_name, #Yes
-              sp = input$spp_scientificname #Yes
+              sp = input$spp_scientificname #Yes,
             )
             print("bycatchSetup ran successfully")
             showModal(
@@ -833,6 +1050,7 @@ datachecksSetup_SERVER <- function(id, observerdataInput = reactive(NULL), logbo
           waitScreen$hide()
           #print(resultsDir())
           #print(setupObj)
+          print(list.files(outDir,recursive = TRUE,full.names = TRUE))
         }
       })
 
