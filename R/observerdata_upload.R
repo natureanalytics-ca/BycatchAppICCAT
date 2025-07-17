@@ -58,7 +58,7 @@ observerupload_UI <- function(id){
               size = "sm",
               div(
                 style = "width: 600px; font-weight: normal;",
-                "Guidance add here."
+                "Mandatory to attach a observer data set. Example data sets are available in the Help page. Files larger than 100 MB will not be uploaded."
               ))
           ),
           "Start by attaching observer data"
@@ -119,7 +119,7 @@ observerupload_UI <- function(id){
           icon = icon("binoculars"),
           textInput(
             inputId = ns("observerdata_title"),
-            label = "Add a brief title for your observer data set",
+            label = "Add a brief title for your observer data set (50 characters maximum)",
             width = '100%'
           ),
           br(),

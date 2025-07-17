@@ -113,11 +113,11 @@ datachecksSetup_SERVER <- function(id, observerdataInput = reactive(NULL), logbo
       ns <- session$ns
       
       #---------------------------
-      #Input contraints on nchar
+      #Input constraints on nchar
       #---------------------------
-      shinyjs::runjs("$('#datachecks_setup-spp_name').attr('maxlength', 10)")
-      shinyjs::runjs("$('#datachecks_setup-spp_scientificname').attr('maxlength', 10)")
-      shinyjs::runjs("$('#datachecks_setup-datachecks_name').attr('maxlength', 10)")
+      shinyjs::runjs("$('#datachecks_setup-spp_name').attr('maxlength', 20)")
+      shinyjs::runjs("$('#datachecks_setup-spp_scientificname').attr('maxlength', 20)")
+      shinyjs::runjs("$('#datachecks_setup-datachecks_name').attr('maxlength', 50)")
       
       #-----------------------------
       #Reset when new dataset loaded
@@ -154,7 +154,8 @@ datachecksSetup_SERVER <- function(id, observerdataInput = reactive(NULL), logbo
                     size = "sm",
                     div(
                       style = "width: 600px; font-weight: normal;",
-                      "Guidance add here."
+                      "Select the name of the column in the observer data that contains catch, and select the units of catch
+                      and catch type."
                     ))
                 ),
                 "Observer data"
@@ -196,7 +197,12 @@ datachecksSetup_SERVER <- function(id, observerdataInput = reactive(NULL), logbo
                     size = "sm",
                     div(
                       style = "width: 600px; font-weight: normal;",
-                      "Guidance add here."
+                      "Select the column names in the observer data and corresponding names in the logbook data for the year variable
+                      and effort variable. Another time step other than year can be used. Indicate what is the sample unit in the observer data
+                      (each row should represent a trip or set) and if the logbook data is structured in the same way. If not, the logbook data is
+                      likely to be aggreated, and the user should indicate what is the column in the logbook data that contains the number of sample 
+                      units. For example, if the sample unit in the observer data is trips, but the logbook data is aggregated by year and area, the user 
+                      should have a column that defines the number of logbook trips by year and area."
                     ))
                 ),
                 "Specify corresponding data structures"
@@ -278,10 +284,10 @@ datachecksSetup_SERVER <- function(id, observerdataInput = reactive(NULL), logbo
                     6,
                     prettyRadioButtons(
                       inputId = ns("logbook_sampleunit"),
-                      label = tagList("What is the sample unit?", div("*", style = "display: inline; color: red;")),
-                      choiceNames = c("Trips", "Sets", "Other (aggregated data)"), #TO ADD: textbox to specify what Other is
-                      choiceValues = c("Trips", "Sets", "Other"),
-                      selected = "Trips",
+                      label = tagList("Same sample units as in observer data?", div("*", style = "display: inline; color: red;")),
+                      choiceNames = c("Yes", "No (aggregated data)"),
+                      choiceValues = c("Yes", "No"),
+                      selected = "Yes",
                       icon = icon("check"),
                       animation = "jelly",
                       inline=TRUE,
@@ -292,7 +298,7 @@ datachecksSetup_SERVER <- function(id, observerdataInput = reactive(NULL), logbo
                         id = ns("logbook_aggregation"),
                         pickerInput(
                           inputId = ns("logbook_aggregationcolumn"),
-                          label = "If data is aggregated, indicate column that gives number of sample units",
+                          label = "Indicate column that gives number of sample units",
                           choices = c("NA", names(logbookdataInput()$dt)),
                           selected = "NA",
                           width = '100%'
@@ -308,7 +314,7 @@ datachecksSetup_SERVER <- function(id, observerdataInput = reactive(NULL), logbo
       })
       
       observeEvent(input$logbook_sampleunit, {
-        shinyjs::toggle("logbook_aggregation", condition = input$logbook_sampleunit == "Other")
+        shinyjs::toggle("logbook_aggregation", condition = input$logbook_sampleunit == "No")
         updatePickerInput(
           inputId = "logbook_aggregationcolumn",
           selected = "NA"
@@ -1043,6 +1049,41 @@ datachecksSetup_SERVER <- function(id, observerdataInput = reactive(NULL), logbo
             )
             showNotification(paste("Error running bycatchSetup:", e$message), type = "error")
             print(paste("bycatchSetup error:", e$message))
+          })
+          
+          #create list of inputs to be saved in resultsDir
+          bycatchsetup_inputs <- list(
+            observerdata_title = observerdataInput()$title,
+            logbookdata_title = logbookdataInput()$title,
+            observer_catch = input$observer_catch,
+            observer_catchunits = input$observer_catchunits,
+            observer_catchtype = input$observer_catchtype,
+            observer_year = input$observer_year,
+            logbook_year = input$logbook_year,
+            observer_effort = input$observer_effort,
+            logbook_effort = input$logbook_effort,
+            observer_sampleunit = input$observer_sampleunit,
+            logbook_sampleunit = input$logbook_sampleunit,
+            logbook_aggregationcolumn = input$logbook_aggregationcolumn,
+            factor_variables = paste(unique(bldFactor$observer),collapse = ";"),
+            numeric_variables = paste(unique(bldNumeric$observer),collapse = ";"),
+            common_name = input$spp_name,
+            scientific_name = input$spp_scientificname,
+            run_description = input$datachecks_name
+          )
+          
+          bycatchsetup_inputs_df <- data.frame(
+            name = names(bycatchsetup_inputs),
+            value = unlist(bycatchsetup_inputs, use.names = FALSE),
+            stringsAsFactors = FALSE)
+          write.csv(bycatchsetup_inputs_df, paste0(outDir,"/bycatch_inputs.csv"),row.names = FALSE)
+          
+          # save data sets in outDir
+          write.csv(observerdataInput()$dt,paste0(outDir,"/observer_dataset.csv"),row.names = FALSE)
+          write.csv(logbook_dt,paste0(outDir,"/logbook_dataset.csv"),row.names = FALSE)
+
+          observe({
+            print(bycatchsetup_inputs_df)
           })
 
           # Save path to generated output
