@@ -43,7 +43,8 @@ datachecksResults_UI <- function(id){
     ),
     
     br(),
-    uiOutput(ns("download_ui"))
+    uiOutput(ns("download_ui")),
+    uiOutput(ns("report_ui"))
   )
   
 }
@@ -65,6 +66,25 @@ datachecksResults_SERVER <- function(id, resultsDir = reactive(NULL)){
       output$download_ui <- renderUI({
         req(resultsDir()$output)
         downloadButton(ns("downloadZip"), "Download results as ZIP")
+      })
+      
+      output$report_ui <- renderUI({
+        req(resultsDir()$output)
+        outDir <- resultsDir()$output
+        #outDir <- "C:\\Users\\WILLIA~1\\AppData\\Local\\Temp\\RtmpKk9b54\\bycatch_output_760c343f6614"
+        all_files <- data.frame(nm = list.files(outDir,recursive = TRUE,full.names = TRUE))
+        src <- all_files %>%
+          filter(stringr::str_detect(nm, pattern = ".html"))
+
+        tagList(
+          div(
+            style = "margin: 10px 0px; border: 1px solid #ADB5BD; border-radius: 5px; padding: 10px; margin: 20px 32px 0px 0px; background: white;",
+            tags$iframe(
+              src = base64enc::dataURI(file=src$nm, mime="text/html; charset=UTF-8"),
+              style="border:0; width:100%; height: 10000px;"
+            )
+          )
+        )
       })
       
       output$downloadZip <- downloadHandler(

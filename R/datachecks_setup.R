@@ -994,8 +994,8 @@ datachecksSetup_SERVER <- function(id, observerdataInput = reactive(NULL), logbo
           # Create temp dir to hold output
           outDir <- tempfile("bycatch_output_")
           dir.create(outDir)
-          print(paste("Dir exists:", dir.exists(outDir)))
-          print(list.files(outDir))
+          #print(paste("Dir exists:", dir.exists(outDir)))
+          #print(list.files(outDir))
           # Run bycatchSetup function
           tryCatch({ # for debugging
             setupObj <- BycatchEstimator::bycatchSetup(
@@ -1050,7 +1050,7 @@ datachecksSetup_SERVER <- function(id, observerdataInput = reactive(NULL), logbo
           waitScreen$hide()
           #print(resultsDir())
           #print(setupObj)
-          print(list.files(outDir,recursive = TRUE,full.names = TRUE))
+          #print(list.files(outDir,recursive = TRUE,full.names = TRUE))
         }
       })
 
