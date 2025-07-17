@@ -58,7 +58,7 @@ logbookupload_UI <- function(id){
               size = "sm",
               div(
                 style = "width: 600px; font-weight: normal;",
-                "Guidance add here."
+                "Mandatory to attach a logbook data set. Example data sets are available in the Help page. Files larger than 100 MB will not be uploaded."
               ))
           ),
           "Start by attaching and previewing logbook data"
@@ -119,7 +119,7 @@ logbookupload_UI <- function(id){
           icon = icon("ship"),
           textInput(
             inputId = ns("logbookdata_title"),
-            label = "Add a brief title for your logbook data set",
+            label = "Add a brief title for your logbook data set (50 characters maximum)",
             width = '100%'
           ),
           br(),

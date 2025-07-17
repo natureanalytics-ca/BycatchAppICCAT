@@ -18,7 +18,7 @@ help_UI <- function(id){
       tagList(
       selectInput(ns("exampleObserverData"),
                   label = "Select an example data set",
-                  choices = c("Simulated data" = "observerdata_example",
+                  choices = c("Simple data" = "observerdata_example",
                               "LLSIM data" = "LLSIM_observerdata_example")
                   ),
       
@@ -41,7 +41,7 @@ help_UI <- function(id){
       tagList(
       selectInput(ns("exampleLogbookData"),
                   label = "Select an example data set",
-                  choices = c("Simulated data" = "logbookdata_example",
+                  choices = c("Simple data" = "logbookdata_example",
                               "LLSIM data" = "LLSIM_logbookdata_example")
       ),
       downloadButton(ns("download_logbookdata_example"),"Download"),

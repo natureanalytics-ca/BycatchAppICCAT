@@ -22,7 +22,7 @@ sidebar <- dashboardSidebar(
   #----------------
   #Settings
   #---------------
-  minified = TRUE,
+  minified = FALSE,
   collapsed = FALSE,
   status = "primary",
   
