@@ -64,7 +64,7 @@ datachecksResults_SERVER <- function(id, resultsDir = reactive(NULL)){
       })
       
       output$download_ui <- renderUI({
-        #req(resultsDir()$output)
+        req(resultsDir()$output)
         tagList(
         div(style = "display: inline-block;",
         downloadButton(ns("downloadZip"), "Download results as ZIP")),
