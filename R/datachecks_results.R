@@ -64,8 +64,26 @@ datachecksResults_SERVER <- function(id, resultsDir = reactive(NULL)){
       })
       
       output$download_ui <- renderUI({
-        req(resultsDir()$output)
-        downloadButton(ns("downloadZip"), "Download results as ZIP")
+        #req(resultsDir()$output)
+        tagList(
+        div(style = "display: inline-block;",
+        downloadButton(ns("downloadZip"), "Download results as ZIP")),
+        div(style = "display: inline-block;",
+          shinyWidgets::dropdown(
+            style = "simple",
+            status = "royal",
+            icon = icon('circle-info'),
+            right = FALSE,
+            size = "sm",
+            div(
+              style = "width: 600px; font-weight: normal;",
+              "The html report in display contains warning messages about missing data or NAs, summary figures and tables showing the sample size and 
+              presence/absence of the bycatch species across levels of exploratory variables, observer coverage levels, raw trends in CPUE, and a 
+              summary of the available data. The zip folder contains this html report together with: observer and logbook data sets uploaded by the user 
+              (logbook_dataset and observer_dataset); a summary of the inputs defined in the app by the user (bycatch_inputs); two files labelled as 
+              DataSummary and StrataSummary which contain data summaries by year and factor variables; and a .rds file that can be read in R."
+            )))
+        )
       })
       
       output$report_ui <- renderUI({
