@@ -78,19 +78,19 @@ logbookupload_UI <- function(id){
       hidden(
         timelineItem(
           title = div(
-            div(
-              style = "float: right;",
-              shinyWidgets::dropdown(
-                style = "simple",
-                status = "royal",
-                icon = icon('circle-info'),
-                right = TRUE,
-                size = "sm",
-                div(
-                  style = "width: 600px; font-weight: normal;",
-                  "Guidance add here."
-                ))
-            ),
+            # div(
+            #   style = "float: right;",
+            #   shinyWidgets::dropdown(
+            #     style = "simple",
+            #     status = "royal",
+            #     icon = icon('circle-info'),
+            #     right = TRUE,
+            #     size = "sm",
+            #     div(
+            #       style = "width: 600px; font-weight: normal;",
+            #       "Guidance add here."
+            #     ))
+            # ),
             "Preview logbook data"
           ),
           icon = icon("ship"),
@@ -111,7 +111,7 @@ logbookupload_UI <- function(id){
                 size = "sm",
                 div(
                   style = "width: 600px; font-weight: normal;",
-                  "Guidance add here."
+                  "Maximum of 50 characters for the title."
                 ))
             ),
             "Finalize and save logbook data"
@@ -119,7 +119,7 @@ logbookupload_UI <- function(id){
           icon = icon("ship"),
           textInput(
             inputId = ns("logbookdata_title"),
-            label = "Add a brief title for your logbook data set (50 characters maximum)",
+            label = "Add a brief title for your logbook data set",
             width = '100%'
           ),
           br(),

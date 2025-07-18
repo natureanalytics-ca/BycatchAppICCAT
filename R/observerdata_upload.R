@@ -78,19 +78,19 @@ observerupload_UI <- function(id){
       hidden(
         timelineItem(
           title = div(
-            div(
-              style = "float: right;",
-              shinyWidgets::dropdown(
-                style = "simple",
-                status = "royal",
-                icon = icon('circle-info'),
-                right = TRUE,
-                size = "sm",
-                div(
-                  style = "width: 600px; font-weight: normal;",
-                  "Guidance add here."
-                ))
-            ),
+            # div(
+            #   style = "float: right;",
+            #   shinyWidgets::dropdown(
+            #     style = "simple",
+            #     status = "royal",
+            #     icon = icon('circle-info'),
+            #     right = TRUE,
+            #     size = "sm",
+            #     div(
+            #       style = "width: 600px; font-weight: normal;",
+            #       "Guidance add here."
+            #     ))
+            # ),
             "Preview observer data"
           ),
           icon = icon("binoculars"),
@@ -111,7 +111,7 @@ observerupload_UI <- function(id){
                 size = "sm",
                 div(
                   style = "width: 600px; font-weight: normal;",
-                  "Guidance add here."
+                  "Maximum of 50 characters for the title."
                 ))
             ),
             "Finalize and save observer data"
@@ -119,7 +119,7 @@ observerupload_UI <- function(id){
           icon = icon("binoculars"),
           textInput(
             inputId = ns("observerdata_title"),
-            label = "Add a brief title for your observer data set (50 characters maximum)",
+            label = "Add a brief title for your observer data set",
             width = '100%'
           ),
           br(),

@@ -200,7 +200,7 @@ datachecksSetup_SERVER <- function(id, observerdataInput = reactive(NULL), logbo
                       "Select the column names in the observer data and corresponding names in the logbook data for the year variable
                       and effort variable. Another time step other than year can be used. Indicate what is the sample unit in the observer data
                       (each row should represent a trip or set) and if the logbook data is structured in the same way. If not, the logbook data is
-                      likely to be aggreated, and the user should indicate what is the column in the logbook data that contains the number of sample 
+                      likely to be aggregated, and the user should indicate what is the column in the logbook data that contains the number of sample 
                       units. For example, if the sample unit in the observer data is trips, but the logbook data is aggregated by year and area, the user 
                       should have a column that defines the number of logbook trips by year and area."
                     ))
@@ -286,8 +286,8 @@ datachecksSetup_SERVER <- function(id, observerdataInput = reactive(NULL), logbo
                       inputId = ns("logbook_sampleunit"),
                       label = tagList("Same sample units as in observer data?", div("*", style = "display: inline; color: red;")),
                       choiceNames = c("Yes", "No (aggregated data)"),
-                      choiceValues = c("Yes", "No"),
-                      selected = "Yes",
+                      choiceValues = c("Same as observer trips", "Aggregated data"),
+                      selected = "Same as observer trips",
                       icon = icon("check"),
                       animation = "jelly",
                       inline=TRUE,
@@ -314,7 +314,7 @@ datachecksSetup_SERVER <- function(id, observerdataInput = reactive(NULL), logbo
       })
       
       observeEvent(input$logbook_sampleunit, {
-        shinyjs::toggle("logbook_aggregation", condition = input$logbook_sampleunit == "No")
+        shinyjs::toggle("logbook_aggregation", condition = input$logbook_sampleunit == "Aggregated data")
         updatePickerInput(
           inputId = "logbook_aggregationcolumn",
           selected = "NA"
@@ -346,7 +346,9 @@ datachecksSetup_SERVER <- function(id, observerdataInput = reactive(NULL), logbo
                     size = "sm",
                     div(
                       style = "width: 600px; font-weight: normal;",
-                      "Guidance add here."
+                      "Specify which variables should be interpreted as categorical. It is mandatory to specify at least 
+                      one factor variable (this can be year or the time step used previously). Examples of factor variables: 
+                      year, season, area, fleet."
                     ))
                 ),
                 div("Select factor variables", div("*", style = "display: inline; color: red;"))
@@ -380,7 +382,8 @@ datachecksSetup_SERVER <- function(id, observerdataInput = reactive(NULL), logbo
                     size = "sm",
                     div(
                       style = "width: 600px; font-weight: normal;",
-                      "Guidance add here."
+                      "Specify which variables should be interpreted as numeric/continuous. These are optional. Examples 
+                      of numeric variables: latitude/longitude, year, month."
                     ))
                 ),
                 "Select numeric variables (optional)"
@@ -656,7 +659,8 @@ datachecksSetup_SERVER <- function(id, observerdataInput = reactive(NULL), logbo
                     size = "sm",
                     div(
                       style = "width: 600px; font-weight: normal;",
-                      "Guidance add here."
+                      "Provide a common name and a scientific name for the species used (maximum of 20 characters). Give 
+                      a brief description to the data checks run (maximum of 50 characters)."
                     ))
                 ),
                 "Add metadata"
@@ -685,19 +689,19 @@ datachecksSetup_SERVER <- function(id, observerdataInput = reactive(NULL), logbo
             ),
             timelineItem(
               title = div(
-                div(
-                  style = "float: right;",
-                  shinyWidgets::dropdown(
-                    style = "simple",
-                    status = "royal",
-                    icon = icon('circle-info'),
-                    right = TRUE,
-                    size = "sm",
-                    div(
-                      style = "width: 600px; font-weight: normal;",
-                      "Guidance add here."
-                    ))
-                ),
+                # div(
+                #   style = "float: right;",
+                #   shinyWidgets::dropdown(
+                #     style = "simple",
+                #     status = "royal",
+                #     icon = icon('circle-info'),
+                #     right = TRUE,
+                #     size = "sm",
+                #     div(
+                #       style = "width: 600px; font-weight: normal;",
+                #       "Guidance add here."
+                #     ))
+                # ),
                 "Run checks & get results"
               ),
               icon = icon("chart-simple"),
@@ -1082,9 +1086,9 @@ datachecksSetup_SERVER <- function(id, observerdataInput = reactive(NULL), logbo
           write.csv(observerdataInput()$dt,paste0(outDir,"/observer_dataset.csv"),row.names = FALSE)
           write.csv(logbook_dt,paste0(outDir,"/logbook_dataset.csv"),row.names = FALSE)
 
-          observe({
-            print(bycatchsetup_inputs_df)
-          })
+          # observe({
+          #   print(bycatchsetup_inputs_df)
+          # })
 
           # Save path to generated output
           resultsDir$output<-outDir
