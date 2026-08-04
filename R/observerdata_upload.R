@@ -14,7 +14,7 @@ observerupload_UI <- function(id){
     ### Info bar
     ### -------------------------
     div (
-      style="display: flex; flex-direction: row; flex-wrap: wrap; width: 100%; align-items: center; padding: 0px 32px 10px 66px;",
+      style="display: flex; flex-direction: row; flex-wrap: wrap; width: 100%; align-items: center; padding: 0px 32px 10px 18px;",
       # Dataset name
       div(
         style = "
@@ -36,12 +36,16 @@ observerupload_UI <- function(id){
           margin: 0px;"
         ,
         div(
-          style = "float: right; padding: 4px 20px;",
-          tags$strong(tags$em("Load observer data"))
-        )
+          style = "float: left; padding: 4px 0px;",
+          div(
+            dashboardBadge("Part 1", color = "primary", position = "left"),
+            HTML("&nbsp;"),
+            tags$strong(tags$em("Gather observer data"))
+          )
+        ),
+        div("*Mandatory fields", style = "float: right; color: red; padding: 4px 4px;"),
       )
     ),
-    div("*Mandatory field", style = "float: right; color: red; padding: 0px 32px 0px 0px;"),
     br(),
     timelineBlock(
       width = 12,
@@ -58,13 +62,19 @@ observerupload_UI <- function(id){
               size = "sm",
               div(
                 style = "width: 600px; font-weight: normal;",
-                "Mandatory to attach a observer data set. Example data sets are available in the Help page. Files larger than 100 MB will not be uploaded."
-              ))
+                tags$ul(
+                  tags$li("An observer data set is mandatory."),
+                  tags$li("CSV file format only"),
+                  tags$li("Example data sets are available in the Help page."),
+                  tags$li("Files larger than 100 MB will not be uploaded.")
+                )
+              )
+            )
           ),
-          "Start by attaching observer data"
+          HTML(paste("Start by attaching", tags$strong("observer data")))
         ),
-        icon = icon("binoculars"),
-        tagList(tags$strong("Attach a file in csv format"), div("*", style = "display: inline; color: red;")),
+        icon = icon("1"),
+        tagList("Attach a file in csv format", div("*", style = "display: inline; color: red;")),
         fileInput(
           inputId = ns("customObserverData"),
           label = NULL,
@@ -78,26 +88,12 @@ observerupload_UI <- function(id){
       hidden(
         timelineItem(
           title = div(
-            # div(
-            #   style = "float: right;",
-            #   shinyWidgets::dropdown(
-            #     style = "simple",
-            #     status = "royal",
-            #     icon = icon('circle-info'),
-            #     right = TRUE,
-            #     size = "sm",
-            #     div(
-            #       style = "width: 600px; font-weight: normal;",
-            #       "Guidance add here."
-            #     ))
-            # ),
-            "Preview observer data"
+            "Review your observer data"
           ),
-          icon = icon("binoculars"),
+          icon = icon("2"),
           DTOutput(ns("previewObserverDT")),
         )
       )%>% shiny::tagAppendAttributes(id = ns("preview")),
-
       hidden(
         timelineItem(
           title = div(
@@ -111,15 +107,18 @@ observerupload_UI <- function(id){
                 size = "sm",
                 div(
                   style = "width: 600px; font-weight: normal;",
-                  "Maximum of 50 characters for the title."
-                ))
+                  tags$ul(
+                    tags$li("Maximum of 50 characters for the title.")
+                  )
+                )
+              )
             ),
-            "Finalize and save observer data"
+            "Add a brief title for your observer data set"
           ),
-          icon = icon("binoculars"),
+          icon = icon("3"),
           textInput(
             inputId = ns("observerdata_title"),
-            label = "Add a brief title for your observer data set",
+            label = tagList("Title", div("*", style = "display: inline; color: red;")),
             width = '100%'
           ),
           br(),
@@ -127,20 +126,14 @@ observerupload_UI <- function(id){
             style = "display: flex; align-items: center; justify-content: center;",
             actionBttn(
               inputId = ns("observerupload_save"),
-              label = tagList("Finalize and save data", div("*", style = "display: inline; color: red;")),
-              icon=icon('floppy-disk'),
+              label = "Advance to part 2: gather logbook data",
               width='100%'
             )
           )
         )%>% shiny::tagAppendAttributes(id = ns("finalize")) #close timelineItem
       )
-      
-
-      
     ) #close timelineBlock
-
   )
-
 }
 
 
@@ -195,37 +188,48 @@ observerupload_SERVER <- function(id){
       #Save button for observer data
       observerInputsInfo <- reactiveValues(dt = NULL, title = NULL)
       
-      
-      observeEvent(input$observerupload_save,{ 
-        #Statement in case there is no data -> modal for user to input data before finalizing
-        if(is.null(previewObserverObj())){
-          showModal(
-            modalDialog(
-              title = div(icon("circle-xmark", style = "color: red;"), div("Logbook data failed", style = "display: inline; padding-left: 5px;")),
-              tags$ul(
-                tags$li("Start by attaching and previewing your data")
-              ),
-              easyClose = TRUE,
-              footer = NULL
-            )
-          )
-        } else {
-          observerInputsInfo$dt <- previewObserverObj()
-          observerInputsInfo$title <- input$observerdata_title
-          showModal(
-            modalDialog(
-              title = div(icon("binoculars", style = "color: #007bff;"), div("Observer data finalized", style = "display: inline; padding-left: 5px;")),
-              tags$ul(
-                tags$li("Remember to load logbook data"),
-                tags$li("Proceed to data checks")
-              ),
-              easyClose = TRUE,
-              footer = NULL
-            )
-          )
-        }
-
+      observe({
+        observerInputsInfo$dt <- previewObserverObj()
+        observerInputsInfo$title <- input$observerdata_title
       })
+      
+      
+      # observeEvent(input$observerupload_save,{ 
+      #   #Statement in case there is no data -> modal for user to input data before finalizing
+      #   if(is.null(previewObserverObj()) || nchar(input$observerdata_title) < 1){
+      #     showModal(
+      #       modalDialog(
+      #         title = div(icon("circle-xmark", style = "color: red;"), div("Logbook data failed", style = "display: inline; padding-left: 5px;")),
+      #         tags$ul(
+      #           tags$li("An observer dataset is required."),
+      #           tags$li("A title for your dataset is required.")
+      #         ),
+      #         easyClose = TRUE,
+      #         footer = NULL
+      #       )
+      #     )
+      #   } else {
+      #     observerInputsInfo$dt <- previewObserverObj()
+      #     observerInputsInfo$title <- input$observerdata_title
+      #     shinyjs::onclick("observerdata_upload-observerupload_save", updateControlbarMenu(
+      #       session = session,
+      #       inputId = "sidebar",
+      #       selected = "Logbook_upload"
+      #     ))
+      #     showModal(
+      #       modalDialog(
+      #         title = div(icon("binoculars", style = "color: #007bff;"), div("Observer data finalized", style = "display: inline; padding-left: 5px;")),
+      #         tags$ul(
+      #           tags$li("Remember to load logbook data"),
+      #           tags$li("Proceed to data checks")
+      #         ),
+      #         easyClose = TRUE,
+      #         footer = NULL
+      #       )
+      #     )
+      #   }
+      # 
+      # })
       
       #-----------------------------
       #Reactives returned by module

@@ -30,71 +30,7 @@ sidebar <- dashboardSidebar(
   #Items
   #-------------
   sidebarMenu(
-   #  menuItem(
-   #    tabName = "home",
-   #    text = tagList(
-   #      div(
-   #        style = "display: flex; justify-content: center; align-items: center;",
-   #      tags$img(
-   #        src = "imgfile.png",
-   #        height = "200px"
-   #      )
-   #    ))
-   #  ),
-   #  br(),
-   #  menuItem(
-   #    tabName = "upload",
-   #    text = "Data upload",
-   #    icon = icon("paperclip"),
-   #    startExpanded = TRUE,
-   #    menuSubItem(
-   #      text = tagList(
-   #        dashboardBadge("Step 1", color = "primary", position = "left"),
-   #        HTML("&nbsp;"),
-   #        tags$small("Observer data")
-   #      ),
-   #      tabName = "Observer_upload",
-   #      icon = NULL
-   #    ),
-   #    menuSubItem(
-   #      text = tagList(
-   #        dashboardBadge("Step 2", color = "primary", position = "left"),
-   #        HTML("&nbsp;"),
-   #        tags$small("Logbook data")
-   #      ),
-   #      tabName = "Logbook_upload",
-   #      icon = NULL
-   #    )
-   #  ),
-   # menuItem(
-   #   tabName = "checks",
-   #   text = "Data checks",
-   #   icon = icon("file-lines"),
-   #   menuSubItem(
-   #     text = tagList(
-   #       dashboardBadge("Step 1", color = "primary", position = "left"),
-   #       HTML("&nbsp;"),
-   #       tags$small("Setup")
-   #     ),
-   #     tabName = "setup_checks",
-   #     icon = NULL
-   #   ),
-   #   menuSubItem(
-   #     text = tagList(
-   #       dashboardBadge("Step 2", color = "primary", position = "left"),
-   #       HTML("&nbsp;"),
-   #       tags$small("Results")
-   #     ),
-   #     tabName = "results_checks",
-   #     icon = NULL
-   #   )
-   # ),
-   # menuItem(
-   #   tabName = "help",
-   #   text = "Help",
-   #   icon = icon("question")
-   # )
-    
+    id = "sidebar",
     menuItem(
       tabName = "home",
       text = tagList(
@@ -107,47 +43,45 @@ sidebar <- dashboardSidebar(
         ))
     ),
     br(),
-    #background: #007bff;
-    div(
-      style = "display: inline; color: #FFFFFF;  margin: 5px 5px; padding: 10px; border-radius: 5px;",
-      icon("paperclip"),
-      HTML("&nbsp;"),
-      "Data upload"
-    ),
-    menuItem(
-      text = tagList(
-        dashboardBadge("Step 1", color = "primary", position = "left"),
-        HTML("&nbsp;"),
-        tags$small("Observer data")
-      ),
-      tabName = "Observer_upload",
-      icon = NULL
-    ),
-    menuItem(
-      text = tagList(
-        dashboardBadge("Step 2", color = "primary", position = "left"),
-        HTML("&nbsp;"),
-        tags$small("Logbook data")
-      ),
-      tabName = "Logbook_upload",
-      icon = NULL
-    ),
     br(),
+    menuItem(
+      text = tags$small("Bycatch data setup"),
+      icon = icon("file-lines"),
+      menuSubItem(
+        text = tagList(
+          dashboardBadge("Part 1", color = "primary", position = "left"),
+          HTML("&nbsp;"),
+          tags$small("Gather observer data")
+        ),
+        tabName = "Observer_upload",
+        icon = NULL
+      ),
+      menuSubItem(
+        text = tagList(
+          dashboardBadge("Part 2", color = "primary", position = "left"),
+          HTML("&nbsp;"),
+          tags$small("Gather logbook data")
+        ),
+        tabName = "Logbook_upload",
+        icon = NULL
+      ),
+      menuSubItem(
+        text = tagList(
+          dashboardBadge("Part 3", color = "primary", position = "left"),
+          HTML("&nbsp;"),
+          tags$small("Setup & activation")
+        ),
+        tabName = "setup_checks",
+        icon = NULL
+      )
+    ),
+
     #background: #007bff
     div(
       style = "display: inline; color: #FFFFFF; ; margin: 5px 5px; padding: 10px; border-radius: 5px;",
       icon("file-lines"),
       HTML("&nbsp;"),
       "Data checks"
-    ),
-    menuItem(
-      text = tagList(
-        dashboardBadge("Step 1", color = "primary", position = "left"),
-        HTML("&nbsp;"),
-        tags$small("Setup")
-      ),
-      tabName = "setup_checks",
-      icon = NULL
     ),
     menuItem(
       text = tagList(

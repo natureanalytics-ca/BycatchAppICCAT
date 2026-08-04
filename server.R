@@ -8,6 +8,23 @@ server <- function(input, output, session) {
   upload_observer_SERVER <- observerupload_SERVER("observerdata_upload")
   upload_logbook_SERVER <- logbookupload_SERVER("logbookdata_upload")
   
+  shinyjs::onclick("observerdata_upload-observerupload_save", 
+    updateControlbarMenu(
+      session = session,
+      inputId = "sidebar",
+      selected = "Logbook_upload"
+    )
+  )
+  
+  shinyjs::onclick("logbookdata_upload-logbookupload_save", 
+                   updateControlbarMenu(
+                     session = session,
+                     inputId = "sidebar",
+                     selected = "setup_checks"
+                   )
+  )
+  
+  
   #-------------------
   #Data checks module
   #-------------------
