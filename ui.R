@@ -45,11 +45,24 @@ sidebar <- dashboardSidebar(
     br(),
     br(),
     menuItem(
-      text = tags$small("Bycatch data setup"),
-      icon = icon("file-lines"),
+      text = "Bycatch setup",
+      icon = icon("table-cells"),
       menuSubItem(
         text = tagList(
-          dashboardBadge("Part 1", color = "primary", position = "left"),
+          tags$small("Instructions")
+        ),
+        tabName = "setup_instructions",
+        icon = NULL
+      ),
+      
+      menuSubItem(
+        text = tagList(
+          dashboardBadge(
+            id = "gather1", 
+            icon("1"),
+            color = "primary", 
+            position = "left"
+          ),
           HTML("&nbsp;"),
           tags$small("Gather observer data")
         ),
@@ -58,7 +71,12 @@ sidebar <- dashboardSidebar(
       ),
       menuSubItem(
         text = tagList(
-          dashboardBadge("Part 2", color = "primary", position = "left"),
+          dashboardBadge(
+            id = "gather2", 
+            icon("2"), 
+            color = "primary", 
+            position = "left"
+          ),
           HTML("&nbsp;"),
           tags$small("Gather logbook data")
         ),
@@ -67,31 +85,29 @@ sidebar <- dashboardSidebar(
       ),
       menuSubItem(
         text = tagList(
-          dashboardBadge("Part 3", color = "primary", position = "left"),
+          dashboardBadge(
+            id = "gather3",
+            icon("3"), 
+            color = "primary", 
+            position = "left"
+          ),
           HTML("&nbsp;"),
-          tags$small("Setup & activation")
+          tags$small("Align data & activate")
         ),
         tabName = "setup_checks",
         icon = NULL
       )
     ),
-
-    #background: #007bff
-    div(
-      style = "display: inline; color: #FFFFFF; ; margin: 5px 5px; padding: 10px; border-radius: 5px;",
-      icon("file-lines"),
-      HTML("&nbsp;"),
-      "Data checks"
-    ),
     menuItem(
-      text = tagList(
-        dashboardBadge("Step 2", color = "primary", position = "left"),
-        HTML("&nbsp;"),
-        tags$small("Results")
-      ),
-      tabName = "results_checks",
-      icon = NULL
+      text = "Data checks",
+      icon = icon("chart-simple"),
+      menuSubItem(
+        text = tags$small("Diagnostics & summary"),
+        tabName = "results_checks",
+        icon = NULL
+      )
     ),
+   
    br(),
    # background: #007bff;
    div(
@@ -115,6 +131,13 @@ sidebar <- dashboardSidebar(
 
 body<-dashboardBody(
   
+  tags$head(
+    tags$script(src = "browserSideJS.js")
+  ),
+  
+  # 4. The UI shield DOM element placed at the top of the body
+  tags$div(id = "ui-shield"),
+  
   #---------------
   #Call to
   #---------------
@@ -133,6 +156,10 @@ body<-dashboardBody(
     tabItem(
       tabName = "home", 
       landingpage_UI("landingpage")
+    ),
+    tabItem(
+      tabName = "setup_instructions", 
+      setupInstuctions_UI("setuppage")
     ),
     tabItem(
       tabName = "Observer_upload",

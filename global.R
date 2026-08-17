@@ -26,6 +26,7 @@ library(DT)
 library(readr)
 library(BycatchEstimator)
 library(dplyr)
+library(reactable)
 
 #------------------------------------------
 # Setup theme (fresh library)

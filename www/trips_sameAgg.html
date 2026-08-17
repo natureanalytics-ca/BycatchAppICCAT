@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<style>body{background-color:white;}</style>
+<script src="lib/core-js-2.5.3/shim.min.js"></script>
+<script src="lib/react-18.2.0/react.min.js"></script>
+<script src="lib/react-18.2.0/react-dom.min.js"></script>
+<script src="lib/reactwidget-2.0.0/react-tools.js"></script>
+<link href="lib/htmltools-fill-0.5.8.1/fill.css" rel="stylesheet" />
+<script src="lib/htmlwidgets-1.6.4/htmlwidgets.js"></script>
+<link href="lib/reactable-0.4.5/reactable.css" rel="stylesheet" />
+<script src="lib/reactable-binding-0.4.5/reactable.js"></script>
+
+</head>
+<body>
+<div style="display: flex; gap: 20px; justify-content: space-between; width: 100%;">
+  <div style="flex: 1; min-width: 0;">
+    <h6>Sample unit: Trips</h6>
+    <div class="reactable html-widget html-fill-item" id="htmlwidget-838e2c3bdb975903c5a0" style="width:auto;height:auto;"></div>
+    <script type="application/json" data-for="htmlwidget-838e2c3bdb975903c5a0">{"x":{"tag":{"name":"Reactable","attribs":{"data":{"Catch":["e.g., 3 fish"],"Effort":["e.g., 7 sets in this trip"],"sample.unit":["<- Trip (each row)"]},"columns":[{"id":"Catch","name":"Catch","type":"character","align":"center","vAlign":"center","headerVAlign":"bottom"},{"id":"Effort","name":"Effort","type":"character","align":"center","vAlign":"center","headerVAlign":"bottom"},{"id":"sample.unit","name":"Sample unit","type":"character","align":"center","vAlign":"center","headerVAlign":"bottom"}],"columnGroups":[{"name":"Observer effort","headerStyle":{"background-color":"pink"},"columns":["Catch","Effort","sample.unit"]}],"sortable":false,"pagination":false,"bordered":true,"striped":true,"compact":true,"style":{"color":"#343a40"},"theme":{"backgroundColor":"transparent","cellPadding":"10px 5px"},"dataKey":"039024d57f62ef1b6111d3ff791a8a76"},"children":[]},"class":"reactR_markup"},"evals":[],"jsHooks":[]}</script>
+  </div>
+  <div style="flex: 1; min-width: 0;">
+    <h6>Aggregation level: Same aggregation as observer data</h6>
+    <div class="reactable html-widget html-fill-item" id="htmlwidget-7606037d8c65a811e52a" style="width:auto;height:auto;"></div>
+    <script type="application/json" data-for="htmlwidget-7606037d8c65a811e52a">{"x":{"tag":{"name":"Reactable","attribs":{"data":{"sample.unit":["Trip (each row) ->"],"Effort":["e.g., 12 sets in this trip"]},"columns":[{"id":"sample.unit","name":"Sample unit","type":"character","align":"center","vAlign":"center","headerVAlign":"bottom"},{"id":"Effort","name":"Effort","type":"character","align":"center","vAlign":"center","headerVAlign":"bottom"}],"columnGroups":[{"name":"Logbook effort","headerStyle":{"background-color":"pink"},"columns":["sample.unit","Effort"]}],"sortable":false,"pagination":false,"bordered":true,"striped":true,"compact":true,"style":{"color":"#343a40"},"theme":{"backgroundColor":"transparent","cellPadding":"10px 5px"},"dataKey":"31aebf2aab8cee348cc4b2231de0b592"},"children":[]},"class":"reactR_markup"},"evals":[],"jsHooks":[]}</script>
+  </div>
+</div>
+</body>
+</html>
