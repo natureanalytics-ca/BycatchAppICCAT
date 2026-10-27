@@ -22,7 +22,7 @@ datachecksSetup_SERVER <- function(id, observerdataInput = reactive(NULL), logbo
       #-----------------------------
       rowKeysFactor <- reactiveVal(character(0))
       rowKeysNumeric <- reactiveVal(character(0))
-      resultsDir <- reactiveVal(list(active = FALSE, setupObj = NULL))
+      resultsDir <- reactiveVal(list(active = FALSE, setupObj = NULL,bycatchsetup_inputs = NULL))
       
       # ==============================================================================
       # Centralized State Controller (Single Source of Truth)
@@ -86,7 +86,8 @@ datachecksSetup_SERVER <- function(id, observerdataInput = reactive(NULL), logbo
         
         # --- STEP 7: Clear prior execution results on data shift ---
         # 
-        resultsDir(list(active = FALSE, setupObj = NULL))
+        unlink(dir(outDir, full.names = TRUE), recursive = TRUE, force = TRUE)
+        resultsDir(list(active = FALSE, setupObj = NULL, bycatchsetup_inputs = NULL))
         
         updateTabsetPanel(
           session = session,
@@ -361,8 +362,8 @@ datachecksSetup_SERVER <- function(id, observerdataInput = reactive(NULL), logbo
           linkage <- data.frame(
             sample.unit = switch(
               input$observer_sampleunit,
-              Trips = c("Trip (each row) ->", NA, NA),
-              Sets = c("Set (each row) ->", NA, NA)
+              Trip = c("Trip (each row) ->", NA, NA),
+              Set = c("Set (each row) ->", NA, NA)
             )
           )
         } else {
@@ -421,8 +422,8 @@ datachecksSetup_SERVER <- function(id, observerdataInput = reactive(NULL), logbo
         linkage <- data.frame(
           sample.unit = switch(
             input$observer_sampleunit,
-            Trips = c("<- Trip (each row)", NA, NA),
-            Sets = c("<- Set (each row)", NA, NA)
+            Trip = c("<- Trip (each row)", NA, NA),
+            Set = c("<- Set (each row)", NA, NA)
           )
         )
         
@@ -456,7 +457,25 @@ datachecksSetup_SERVER <- function(id, observerdataInput = reactive(NULL), logbo
         bldFactor  <- compiledFactorPairs()
         bldNumeric <- compiledNumericPairs() # Assumed to follow the same list structure
         tagList(
-          tags$strong(tags$em("Input summary")),
+          tags$strong(tags$em("Activation complete")),
+          div(
+            style = "float: right;",
+            shinyWidgets::dropdown(
+              style = "simple",
+              status = "royal",
+              icon = icon('circle-info'),
+              right = TRUE,
+              size = "sm",
+              div(
+                style = "width: 600px; font-weight: normal;",
+                "Activation complete",
+                tags$ul(
+                  tags$li("Year variable and factor variables sometimes require re-naming for consistency across datasets."),
+                  tags$li("This task is done automatically, with details shown in the table below."),
+                  tags$li("In cases where re-naming has occurred, note the syntax 'old name' --> 'new name'.")
+                 )
+              ))
+          ),
           div(
             style = "margin: 10px 0px; border: 1px solid #ADB5BD; border-radius: 5px; padding: 10px;",
             
@@ -477,9 +496,16 @@ datachecksSetup_SERVER <- function(id, observerdataInput = reactive(NULL), logbo
             # Catch Row
             fluidRow(
               column(4, tags$strong("Catch:")),
-              column(4, div(style = "color: #007bff;", observerdataInput()$observer_catch)),
+              column(4, 
+                     if("Catch" == observerdataInput()$observer_catch) {
+                       div(style = "color: #007bff;", "Catch")
+                     } else {
+                       div(style = "color: #007bff;", observerdataInput()$observer_catch, icon("arrow-right"), "Catch")
+                     }
+              ),
               column(4)
             ),
+            
             
             # Units of Catch Row
             fluidRow(
@@ -498,12 +524,18 @@ datachecksSetup_SERVER <- function(id, observerdataInput = reactive(NULL), logbo
             # Year Row
             fluidRow(
               column(4, tags$strong("Year:")),
-              column(4, div(style = "color: #007bff;", observerdataInput()$observer_year)),
               column(4, 
-                     if(observerdataInput()$observer_year == logbookdataInput()$logbook_year) {
-                       div(style = "color: #007bff;", logbookdataInput()$logbook_year)
+                     if("Year" == observerdataInput()$observer_year) {
+                       div(style = "color: #007bff;", "Year")
                      } else {
-                       div(style = "color: #007bff;", logbookdataInput()$logbook_year, icon("arrow-right"), observerdataInput()$observer_year)
+                       div(style = "color: #007bff;", observerdataInput()$observer_year, icon("arrow-right"), "Year")
+                     }
+              ),
+              column(4, 
+                     if("Year" == logbookdataInput()$logbook_year) {
+                       div(style = "color: #007bff;", "Year")
+                     } else {
+                       div(style = "color: #007bff;", logbookdataInput()$logbook_year, icon("arrow-right"), "Year")
                      }
               )
             ),
@@ -526,6 +558,11 @@ datachecksSetup_SERVER <- function(id, observerdataInput = reactive(NULL), logbo
             fluidRow(
               column(4, tags$strong("Factor variables:")),
               column(4, 
+                     if("Year" == observerdataInput()$observer_year) {
+                       div(style = "color: #007bff;", "Year")
+                     } else {
+                       div(style = "color: #007bff;", observerdataInput()$observer_year, icon("arrow-right"), "Year")
+                     },
                      if(length(bldFactor) > 0) {
                        lapply(bldFactor, function(item) {
                          obs_val <- item$observer
@@ -537,6 +574,11 @@ datachecksSetup_SERVER <- function(id, observerdataInput = reactive(NULL), logbo
                      }
               ),
               column(4, 
+                     if("Year" == logbookdataInput()$logbook_year) {
+                       div(style = "color: #007bff;", "Year")
+                     } else {
+                       div(style = "color: #007bff;", logbookdataInput()$logbook_year, icon("arrow-right"), "Year")
+                     },
                      if(length(bldFactor) > 0) {
                        lapply(bldFactor, function(item) {
                          obs_val <- item$observer
@@ -551,38 +593,38 @@ datachecksSetup_SERVER <- function(id, observerdataInput = reactive(NULL), logbo
                        })
                      }
               )
-            ),
+            )#,
             
             # --- DYNAMIC NUMERIC VARIABLES SECTION (FIXED LIST LOOPING) ---
-            fluidRow(
-              column(4, tags$strong("Numeric variables:")),
-              column(4, 
-                     if(length(bldNumeric) > 0) {
-                       lapply(bldNumeric, function(item) {
-                         obs_val <- item$observer
-                         log_val <- item$logbook
-                         if(all(!is.null(obs_val), !is.null(log_val))){
-                           return(div(style = "display: block; color: #007bff;", obs_val))
-                         }
-                       })
-                     }
-              ),
-              column(4, 
-                     if(length(bldNumeric) > 0) {
-                       lapply(bldNumeric, function(item) {
-                         obs_val <- item$observer
-                         log_val <- item$logbook
-                         if(all(!is.null(obs_val), !is.null(log_val))){
-                           if(obs_val == log_val) {
-                             return(div(style = "color: #007bff;", log_val))
-                           } else {
-                             return(div(style = "color: #007bff;", log_val, icon("arrow-right"), obs_val))
-                           }
-                         }
-                       })
-                     }
-              )
-            )
+            # fluidRow(
+            #   column(4, tags$strong("Numeric variables:")),
+            #   column(4, 
+            #          if(length(bldNumeric) > 0) {
+            #            lapply(bldNumeric, function(item) {
+            #              obs_val <- item$observer
+            #              log_val <- item$logbook
+            #              if(all(!is.null(obs_val), !is.null(log_val))){
+            #                return(div(style = "display: block; color: #007bff;", obs_val))
+            #              }
+            #            })
+            #          }
+            #   ),
+            #   column(4, 
+            #          if(length(bldNumeric) > 0) {
+            #            lapply(bldNumeric, function(item) {
+            #              obs_val <- item$observer
+            #              log_val <- item$logbook
+            #              if(all(!is.null(obs_val), !is.null(log_val))){
+            #                if(obs_val == log_val) {
+            #                  return(div(style = "color: #007bff;", log_val))
+            #                } else {
+            #                  return(div(style = "color: #007bff;", log_val, icon("arrow-right"), obs_val))
+            #                }
+            #              }
+            #            })
+            #          }
+            #   )
+            # )
             
           )
         )
@@ -608,8 +650,11 @@ datachecksSetup_SERVER <- function(id, observerdataInput = reactive(NULL), logbo
           !nzchar(input$spp_scientificname) ||
           !nzchar(input$spp_name) ||
           !nzchar(input$datachecks_name) ||
+          isTRUE("Effort" %in% names(observerdataInput()$dt) && input$observer_effort != "Effort") ||
+          isTRUE("Effort" %in% names(logbookdataInput()$dt) && input$logbook_effort != "Effort") ||
           isTRUE(input$logbook_sampleunit == "Aggregated further" && is.null(input$logbook_aggregationcolumn)) ||
           isTRUE(input$logbook_sampleunit == "Aggregated further" && input$logbook_aggregationcolumn == input$logbook_effort) ||
+          isTRUE(input$logbook_sampleunit == "Aggregated further" && "SampleUnits" %in% names(logbookdataInput()$dt) && input$logbook_aggregationcolumn != "SampleUnits") ||
           isTRUE(length(compiledFactorPairs()) > 0 && any(duplicated(bind_rows(compiledFactorPairs())$observer))) ||
           isTRUE(length(compiledFactorPairs()) > 0 && any(duplicated(bind_rows(compiledFactorPairs())$logbook))) ||
           isTRUE(length(compiledFactorPairs()) > 0 && is.null(bind_rows(compiledFactorPairs())[['observer']])) ||
@@ -656,11 +701,14 @@ datachecksSetup_SERVER <- function(id, observerdataInput = reactive(NULL), logbo
           #Select data and rename columns, if needed
           observer_dt <- observerdataInput()$dt %>%
             select(any_of(c(observerdataInput()$observer_year, observerdataInput()$observer_catch, input$observer_effort, bldFactor$observer))) %>% #
-            dplyr::rename("Year" := !!observerdataInput()$observer_year)
+            dplyr::rename("Year" := !!observerdataInput()$observer_year) %>%
+            dplyr::rename("Catch" := !!observerdataInput()$observer_catch) %>%
+            dplyr::rename("Effort" := !!input$observer_effort)
           
           logbook_dt <- logbookdataInput()$dt %>%
             select(any_of(c(logbookdataInput()$logbook_year, input$logbook_effort,  bldFactor$logbook))) %>%
-            dplyr::rename("Year" := !!logbookdataInput()$logbook_year)
+            dplyr::rename("Year" := !!logbookdataInput()$logbook_year) %>%
+            dplyr::rename("Effort" := !!input$logbook_effort)
           
           if(NROW(bldFactor) > 0){
             for(i in 1:NROW(bldFactor)){
@@ -671,6 +719,26 @@ datachecksSetup_SERVER <- function(id, observerdataInput = reactive(NULL), logbo
           
           # Run bycatchSetup function
           tryCatch({ # for debugging
+            setupObj <- BycatchEstimator::bycatchSetup(
+              obsdat = observer_dt, #Yes
+              logdat = logbook_dt, #Yes
+              yearVar = "Year", #Yes
+              obsEffort = "Effort", #Yes
+              logEffort = "Effort", #Yes
+              obsCatch = "Catch", #Yes
+              catchUnit = observerdataInput()$observer_catchunits, #Yes
+              catchType = observerdataInput()$observer_catchtype, #Yes
+              logNum = if (input$logbook_sampleunit == "Aggregated further") input$logbook_aggregationcolumn else NA, #Yes
+              sampleUnit = input$observer_sampleunit, #Yes
+              factorVariables = c("Year", unique(c(bldFactor$observer))), #UI will not allow Year to be selected, so added here.
+              numericVariables = unique(bldNumeric$observer), #Yes
+              baseDir = outDir, #Yes
+              runName = input$datachecks_name,  #Yes
+              runDescription = input$datachecks_name, #Yes
+              common = input$spp_name, #Yes
+              sp = input$spp_scientificname #Yes,
+            )
+            
             #create list of inputs to be saved in resultsDir
             bycatchsetup_inputs <- list(
               observerdata_title = observerdataInput()$title,
@@ -702,31 +770,11 @@ datachecksSetup_SERVER <- function(id, observerdataInput = reactive(NULL), logbo
             write.csv(observer_dt, paste0(outDir,"/observer_dataset.csv"),row.names = FALSE)
             write.csv(logbook_dt, paste0(outDir,"/logbook_dataset.csv"),row.names = FALSE)
             
-            setupObj <- BycatchEstimator::bycatchSetup(
-              obsdat = observer_dt, #Yes
-              logdat = logbook_dt, #Yes
-              yearVar = observerdataInput()$observer_year, #Yes
-              obsEffort = input$observer_effort, #Yes
-              logEffort = input$logbook_effort, #Yes
-              obsCatch = observerdataInput()$observer_catch, #Yes
-              catchUnit = observerdataInput()$observer_catchunits, #Yes
-              catchType = observerdataInput()$observer_catchtype, #Yes
-              logNum = if (input$logbook_sampleunit == "Aggregated further") input$logbook_aggregationcolumn else NA, #Yes
-              sampleUnit = input$observer_sampleunit, #Yes
-              factorVariables = c("Year", unique(c(bldFactor$observer))), #Yes
-              numericVariables = unique(bldNumeric$observer), #Yes
-              baseDir = outDir, #Yes
-              runName = input$datachecks_name,  #Yes
-              runDescription = input$datachecks_name, #Yes
-              common = input$spp_name, #Yes
-              sp = input$spp_scientificname #Yes,
-            )
-            
-            resultsDir(list(active = TRUE, setupObj = setupObj))
+            resultsDir(list(active = TRUE, setupObj = setupObj, bycatchsetup_inputs = bycatchsetup_inputs))
             
             showModal(
               modalDialog(
-                title = div(icon("circle-check", style = "color: #007bff;"), div("Activation completed", style = "display: inline; padding-left: 5px;")),
+                title = div(icon("circle-check", style = "color: #198754;"), div("Activation completed", style = "display: inline; padding-left: 5px;")),
                 tags$ul(
                   tags$li("Bycatch setup was successful"),
                   tags$li("Proceed to Data Checks and select diagnostics & summary")
@@ -744,7 +792,7 @@ datachecksSetup_SERVER <- function(id, observerdataInput = reactive(NULL), logbo
 
           }, error = function(e) {
             
-            resultsDir(list(active = FALSE, setupObj = NULL))
+            resultsDir(list(active = FALSE, setupObj = NULL, bycatchsetup_inputs = NULL))
             
             showModal(
               modalDialog(
@@ -767,11 +815,28 @@ datachecksSetup_SERVER <- function(id, observerdataInput = reactive(NULL), logbo
         on.exit({
           shinyjs::runjs("document.getElementById('ui-shield').style.display = 'none';")
         })
-        resultsDir(list(active = FALSE, setupObj = NULL))
-        updateTabsetPanel(
-          session = session,
-          inputId = "inputUIPanel", 
-          selected = "dataStructureTab"
+        
+        shinyalert(
+          inputId = session$ns("deactivateAlert"),
+          title = "Deactivate bycatch setup?",
+          text = "Deactivation allows you to modify your bycatch setup. However, doing so will reset 'Data checks' and 'Design-based estimators'. Your current analyses will be lost. Are you sure you want to continue?",
+          type = "warning",
+          showConfirmButton = TRUE,
+          showCancelButton = TRUE,
+          confirmButtonText = "Yes",
+          cancelButtonText = "No",
+          callbackR = function(value = input$deactivateAlert) {
+            #Yes button clicked, delete project from server
+            if(value){
+              unlink(dir(outDir, full.names = TRUE), recursive = TRUE, force = TRUE)
+              resultsDir(list(active = FALSE, setupObj = NULL, bycatchsetup_inputs = NULL))
+              updateTabsetPanel(
+                session = session,
+                inputId = "inputUIPanel", 
+                selected = "dataStructureTab"
+              )
+            }
+          }
         )
       }, ignoreInit = TRUE)
       

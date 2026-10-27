@@ -14,7 +14,7 @@ datachecksSetup_UI <- function(id){
     ### Info bar   
     ### -------------------------
     div (
-      style="display: flex; flex-direction: row; flex-wrap: wrap; width: 100%; align-items: center; padding: 0px 32px 10px 0px;",
+      style="display: flex; flex-direction: row; flex-wrap: wrap; width: 100%; align-items: center; padding: 0px 0px 10px 0px;",
       # Dataset name
       div(
         style = "
@@ -43,7 +43,7 @@ datachecksSetup_UI <- function(id){
             tags$strong(tags$em("Align data & activate"))
           )
         ),
-        div("*Mandatory fields", style = "float: right; color: red; padding: 4px 4px;"),
+        div("*Mandatory fields", style = "float: right; color: red; padding: 4px 10px;"),
       )
     ),
     br(),
@@ -52,7 +52,6 @@ datachecksSetup_UI <- function(id){
     ###--------------------------------------------
     div(
       id = ns("warningPanelToggle"),
-      style = "margin: 0px 29px 0px 0px;",
       valueBox(
         value = tags$strong("Align data & activate is not available"),
         subtitle = tagList(
@@ -127,10 +126,27 @@ datachecksSetup_UI <- function(id){
                         maxOptions = 1
                       )
                     ),
+                    tags$div(
+                      id = ns("observer_effortWarning"),
+                      style = "color: red; font-weight: bold; margin: 5px; display: none;",
+                      "Warning: Effort is available but you selected something else!",
+                      br(),
+                      div(
+                        style = "color: black; font-weight: normal;",
+                        "This action is not allowed because 'Effort' is a protected column name.",
+                        br(),
+                        "To correct this issue, do the following:",
+                        tags$ul(
+                          tags$li("Option 1: Select 'Effort' as your effort variable."),
+                          tags$li("Option 2: Remove or rename 'Effort' column in your dataset, re-upload file, and select your preferred effort variable.")
+                        )
+                      ),
+                      br()
+                    ),
                     pickerInput(
                       inputId = ns("observer_sampleunit"),
                       label = tagList("Specify sample unit of observer effort", div("*", style = "display: inline; color: red;"), br(), "(i.e., what does each row represent?)"),
-                      choices = c("Trips", "Sets"),
+                      choices = c("Trip", "Set"),
                       selected = NULL,
                       width = '100%',
                       multiple = TRUE,
@@ -155,6 +171,23 @@ datachecksSetup_UI <- function(id){
                       options = pickerOptions(
                         maxOptions = 1
                       )
+                    ),
+                    tags$div(
+                      id = ns("logbook_effortWarning"),
+                      style = "color: red; font-weight: bold; margin: 5px; display: none;",
+                      "Warning: Effort is available but you selected something else!",
+                      br(),
+                      div(
+                        style = "color: black; font-weight: normal;",
+                        "This action is not allowed because 'Effort' is a protected column name.",
+                        br(),
+                        "To correct this issue, do the following:",
+                        tags$ul(
+                          tags$li("Option 1: Select 'Effort' as your effort variable."),
+                          tags$li("Option 2: Remove or rename 'Effort' column in your dataset, re-upload file, and select your preferred effort variable.")
+                        )
+                      ),
+                      br()
                     ),
                     pickerInput(
                       inputId = ns("logbook_sampleunit"),
@@ -183,13 +216,32 @@ datachecksSetup_UI <- function(id){
                         ),
                         #Warning text (initially empty)
                         tags$div(
+                          id = ns("logbook_aggregationcolumnWarning2"),
+                          style = "color: red; font-weight: bold; margin: 5px; display: none;",
+                          "Warning: SampleUnits is available but you selected something else!",
+                          br(),
+                          div(
+                            style = "color: black; font-weight: normal;",
+                            "This action is not allowed because 'SampleUnits' is a protected column name.",
+                            br(),
+                            "To correct this issue, do the following:",
+                            tags$ul(
+                              tags$li("Option 1: Select 'SampleUnits' as your counts variable."),
+                              tags$li("Option 2: Remove or rename 'SampleUnits' column in your dataset, re-upload file, and select your preferred counts variable.")
+                            )
+                          ),
+                          br()
+                        ),
+                        #Warning text (initially empty)
+                        tags$div(
                           id = ns("logbook_aggregationcolumnWarning"),
-                          style = "color: red; font-weight: bold; margin: 5px 5px 20px 5px; ", #display: none;
+                          style = "color: red; font-weight: bold; margin: 5px 5px 20px 5px; display: none;",
                           "Warning: Counts of sample units and effort columns are identical.",
                           div(
                             style = "color: black; font-weight: normal;",
                             "This action is not allowed because counts of sample units and effort columns must be different."
-                          )
+                          ),
+                          br()
                         )
                       )
                     )
@@ -201,7 +253,7 @@ datachecksSetup_UI <- function(id){
                   div(
                     tags$strong("Help! Setting up fishing effort is tricky"),
                     br(),
-                    tags$em("Find an example below that aligns with your data structure:")
+                    tags$em("Expand tab to find an example that aligns with your data structure:")
                   )
                 ),
                 collapsible = TRUE,
@@ -253,10 +305,17 @@ datachecksSetup_UI <- function(id){
                     size = "sm",
                     div(
                       style = "width: 600px; font-weight: normal;",
+                      "Select factor variables:",
                       tags$ul(
-                        tags$li("Specify which variables should be interpreted as categorical."),
-                        tags$li("For design-based estimators, Year is required and has been populated for you (no need to repeat this entry)."),
-                        tags$li("Other examples of factor variable may include:  season, area, fleet.")
+                        tags$li("Specify variables that should be interpreted as factors."),
+                        tags$li("Year is required and has been populated for you (no need to repeat this entry)."),
+                        br(),
+                        br(),
+                        tags$li("Factors are selected by clicking on add a variable and choosing a column name from the observer dataset and matching it with the corresponding column name in the logbook dataset."),
+                        tags$li("Column names from the observer dataset and logbook dataset should almost always be identical."),
+                        tags$li("In cases where names do not match, re-naming of the logbook factor will occur using the name from the observer dataset."),
+                        tags$li("Matching factor names are required for analysis."),
+                        tags$li("Re-naming can sometimes cause data processing errors. Please use care when choosing to re-name variables.")
                       )
                     ))
                 ),
@@ -431,7 +490,7 @@ datachecksSetup_UI <- function(id){
                 style = "display: flex; align-items: center; justify-content: center; margin-top: 20px;",
                 actionBttn(
                   inputId = ns("deactivate"),
-                  label = tagList("Deactivate and return to previous", div("*", style = "display: inline; color: red;")),
+                  label = "Deactivate and return to previous",
                   onclick = "document.getElementById('ui-shield').style.display = 'block';"
                 )
               )

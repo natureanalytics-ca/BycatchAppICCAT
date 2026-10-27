@@ -54,7 +54,7 @@ inputTheme <- fresh::create_theme(
   #Layout options
   bs4dash_layout(
     font_size_root = NULL,
-    sidebar_width = NULL,
+    sidebar_width = "300px",
     sidebar_padding_x = NULL,
     sidebar_padding_y = NULL,
     sidebar_mini_width = NULL,

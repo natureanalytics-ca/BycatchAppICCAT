@@ -14,7 +14,7 @@ datachecksResults_UI <- function(id){
     ### Info bar   
     ### -------------------------
     div (
-      style="display: flex; flex-direction: row; flex-wrap: wrap; width: 100%; align-items: center; padding: 0px 32px 10px 0px;",
+      style="display: flex; flex-direction: row; flex-wrap: wrap; width: 100%; align-items: center; padding: 0px 0px 10px 0px;",
       # Dataset name
       div(
         style = "
@@ -37,7 +37,11 @@ datachecksResults_UI <- function(id){
         ,
         div(
           style = "float: left; padding: 4px 0px;",
-          tags$strong(tags$em("Diagnostics & summary"))
+          div(
+            dashboardBadge("Part 1", color = "primary", position = "left"),
+            HTML("&nbsp;"),
+            tags$strong(tags$em("Diagnostics & summary"))
+          )
         )
       )
     ),
@@ -47,12 +51,11 @@ datachecksResults_UI <- function(id){
     ###--------------------------------------------
     div(
       id = ns("warningPanelToggle"),
-      style = "margin: 0px 29px 0px 0px;",
       valueBox(
         value = tags$strong("Diagnostics & summary is not available"),
         subtitle = tagList(
           br(),
-          "You must complete Bycatch Setup before accessing this module."
+          "You must complete Bycatch setup before accessing this module."
         ),
         icon = icon("info"),
         color = "secondary",
@@ -63,7 +66,6 @@ datachecksResults_UI <- function(id){
         elevation = NULL
       )
     ),
-    uiOutput(ns("download_ui")),
     withSpinner(uiOutput(ns("report_ui")))
   )
   

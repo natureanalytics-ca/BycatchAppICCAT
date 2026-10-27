@@ -13,7 +13,7 @@ setupInstuctions_UI <- function(id){
     ### Info bar   
     ### -------------------------
     div (
-      style="display: flex; flex-direction: row; flex-wrap: wrap; width: 100%; align-items: center; padding: 0px 10.5px 10px 0px;",
+      style="display: flex; flex-direction: row; flex-wrap: wrap; width: 100%; align-items: center; padding: 0px 0px 10px 0px;",
       # Dataset name
       div(
         style = "
@@ -42,7 +42,7 @@ setupInstuctions_UI <- function(id){
     ),
     
     box(
-      collapsible = TRUE,
+      collapsible = FALSE,
       collapsed = FALSE,
       width = 12,
       title = "Bycatch setup",
@@ -81,6 +81,9 @@ setupInstuctions_UI <- function(id){
         title = "Preview simple observer dataset",
         collapsible = TRUE,
         collapsed = TRUE,
+        "First 10 rows of data shown.",
+        br(),
+        "Dowload file to see entire dataset.",
         DTOutput(ns("exampleObserverDataSimpleDT"))
       ),
       div(
@@ -101,7 +104,62 @@ setupInstuctions_UI <- function(id){
         title = "Preview simple logbook dataset",
         collapsible = TRUE,
         collapsed = TRUE,
+        "First 10 rows of data shown.",
+        br(),
+        "Dowload file to see entire dataset.",
         DTOutput(ns("exampleLogbookDataSimpleDT"))
+      )
+    ),
+    box(
+      collapsible = TRUE,
+      collapsed = TRUE,
+      width = 12,
+      title = "Simple observer with aggregated logbook datasets",
+      div(
+        style = "margin: 0px 7.5px 10px; 0px;",
+        h6(tags$strong("Observer data")),
+        downloadButton(
+          ns("download_observerdata_simple2"),
+          "Download observer data",
+          onclick = "
+                document.getElementById('ui-shield').style.display = 'block';
+                setTimeout(function() { 
+                  document.getElementById('ui-shield').style.display = 'none'; 
+                }, 3000);"
+        )
+      ),
+      box(
+        width = 12,
+        title = "Preview simple observer dataset",
+        collapsible = TRUE,
+        collapsed = TRUE,
+        "First 10 rows of data shown.",
+        br(),
+        "Dowload file to see entire dataset.",
+        DTOutput(ns("exampleObserverDataSimpleDT2"))
+      ),
+      div(
+        style = "margin: 30px 7.5px 10px 7.5px;",
+        h6(tags$strong("Logbook aggredated data")),
+        downloadButton(
+          ns("download_logbookdata_aggregated"),
+          "Download aggregated logbook data",
+          onclick = "
+                document.getElementById('ui-shield').style.display = 'block';
+                setTimeout(function() { 
+                  document.getElementById('ui-shield').style.display = 'none'; 
+                }, 3000);"
+        )
+      ),
+      box(
+        width = 12,
+        title = "Preview aggregated logbook dataset",
+        collapsible = TRUE,
+        collapsed = TRUE,
+        "First 10 rows of data shown.",
+        br(),
+        "Dowload file to see entire dataset.",
+        DTOutput(ns("exampleLogbookDataAggregatedDT"))
       )
     ),
     box(
@@ -127,6 +185,9 @@ setupInstuctions_UI <- function(id){
         title = "Preview complex observer dataset",
         collapsible = TRUE,
         collapsed = TRUE,
+        "First 10 rows of data shown.",
+        br(),
+        "Dowload file to see entire dataset.",
         DTOutput(ns("exampleObserverDataLLSIMDT"))
       ),
       div(
@@ -147,6 +208,9 @@ setupInstuctions_UI <- function(id){
         title = "Preview complex logbook dataset",
         collapsible = TRUE,
         collapsed = TRUE,
+        "First 10 rows of data shown.",
+        br(),
+        "Dowload file to see entire dataset.",
         DTOutput(ns("exampleLogbookDataLLSIMDT"))
       )
     )
@@ -188,7 +252,7 @@ setupInstuctions_SERVER <- function(id){
         return(dt)
       })
       
-      output$download_observerdata_simple <- downloadHandler(
+      output$download_observerdata_simple <- output$download_observerdata_simple2 <- downloadHandler(
         filename = function(){
           "observerdata_simple.csv"
         },
@@ -208,17 +272,53 @@ setupInstuctions_SERVER <- function(id){
         
       )
       
-      output$exampleObserverDataSimpleDT <- renderDT({
+      output$exampleObserverDataSimpleDT <- output$exampleObserverDataSimpleDT2 <- renderDT({
         req(observerDataSimple_example())
-        datatable(head(observerDataSimple_example()),
+        datatable(head(observerDataSimple_example(), n = 10L),
+                  options = list(dom = 't', pageLength = 10),
                   rownames=FALSE)
       })
       
       output$exampleLogbookDataSimpleDT <- renderDT({
         req(logbookDataSimple_example())
-        datatable(head(logbookDataSimple_example()),
+        datatable(head(logbookDataSimple_example(), n = 10L),
+                  options = list(dom = 't', pageLength = 10),
+                  rownames=FALSE
+                  )
+      })
+      
+      #------------------
+      #Aggregated logbook
+      #------------------
+      
+      logbookDataAggregated_example <- reactive({
+        dt<-tryCatch(
+          {
+            read.csv(paste0("www/example_datasets/logbookdata_example_aggregate.csv"), header = TRUE)
+          },
+          error = function(e) {
+            NULL
+          }
+        )
+        return(dt)
+      })
+      
+      output$exampleLogbookDataAggregatedDT <- renderDT({
+        req(logbookDataAggregated_example())
+        datatable(head(logbookDataAggregated_example(), n = 10L),
+                  options = list(dom = 't', pageLength = 10),
                   rownames=FALSE)
       })
+      
+      output$download_logbookdata_aggregated <- downloadHandler(
+        filename = function(){
+          "logbookdata_aggregate.csv"
+        },
+        content = function(file){
+          write.csv(logbookDataAggregated_example(), file, row.names = FALSE)
+        }
+        
+      )
       
       #----------------
       #LLSIM datasets
@@ -268,13 +368,15 @@ setupInstuctions_SERVER <- function(id){
       
       output$exampleObserverDataLLSIMDT <- renderDT({
         req(observerDataLLSIM_example())
-        datatable(head(observerDataLLSIM_example()),
+        datatable(head(observerDataLLSIM_example(), n = 10L),
+                  options = list(dom = 't', pageLength = 10),
                   rownames=FALSE)
       })
       
       output$exampleLogbookDataLLSIMDT <- renderDT({
         req(logbookDataLLSIM_example())
-        datatable(head(logbookDataLLSIM_example()),
+        datatable(head(logbookDataLLSIM_example(), n = 10L),
+                  options = list(dom = 't', pageLength = 10),
                   rownames=FALSE)
       })
       

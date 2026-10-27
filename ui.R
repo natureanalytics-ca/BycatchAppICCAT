@@ -54,7 +54,6 @@ sidebar <- dashboardSidebar(
         tabName = "setup_instructions",
         icon = NULL
       ),
-      
       menuSubItem(
         text = tagList(
           dashboardBadge(
@@ -98,28 +97,104 @@ sidebar <- dashboardSidebar(
         icon = NULL
       )
     ),
+    
     menuItem(
       text = "Data checks",
       icon = icon("chart-simple"),
       menuSubItem(
-        text = tags$small("Diagnostics & summary"),
+        text = tagList(
+          tags$small("Instructions")
+        ),
+        tabName = "results_instructions",
+        icon = NULL
+      ),
+      menuSubItem(
+        text = tagList(
+          dashboardBadge(
+            id = "check1",
+            icon("1"), 
+            color = "primary", 
+            position = "left"
+          ),
+          HTML("&nbsp;"),
+          tags$small("Diagnostics & summary")
+        ),
         tabName = "results_checks",
         icon = NULL
       )
     ),
    
-   br(),
-   # background: #007bff;
-   div(
-     style = "display: inline; color: #FFFFFF;  margin: 5px 5px; padding: 10px; border-radius: 5px;",
-     icon("question"),
-     HTML("&nbsp;"),
-     "Support"
-   ),
+    menuItem(
+      text = "Design-based estimators",
+      icon = icon("chart-line"),
+      menuSubItem(
+        text = tagList(
+          tags$small("Instructions")
+        ),
+        tabName = "design_instructions",
+        icon = NULL
+      ),
+      menuSubItem(
+        text = tagList(
+          dashboardBadge(
+            id = "design1", 
+            icon("1"),
+            color = "primary", 
+            position = "left"
+          ),
+          HTML("&nbsp;"),
+          tags$small("Specifications")
+        ),
+        tabName = "design_specifications",
+        icon = NULL
+      ),
+      menuSubItem(
+        text = tagList(
+          dashboardBadge(
+            id = "design2", 
+            icon("2"), 
+            color = "primary", 
+            position = "left"
+          ),
+          HTML("&nbsp;"),
+          tags$small("Analysis results")
+        ),
+        tabName = "design_results",
+        icon = NULL
+      )
+    ),
+    
+    menuItem(
+      text = "Download outputs",
+      icon = icon("file-zipper"),
+      menuSubItem(
+        text = tagList(
+          tags$small("Instructions")
+        ),
+        tabName = "download_instructions",
+        icon = NULL
+      ),
+      menuSubItem(
+        text = tagList(
+          dashboardBadge(
+            id = "download1",
+            icon("1"), 
+            color = "primary", 
+            position = "left"
+          ),
+          HTML("&nbsp;"),
+          tags$small("Download")
+        ),
+        tabName = "download_download",
+        icon = NULL
+      )
+    ),
+    br(),
+    br(),
     menuItem(
       tabName = "help",
       text = "Help",
-      icon = icon("question")
+      icon = icon("circle-info")
     )
   )
 )
@@ -174,8 +249,32 @@ body<-dashboardBody(
       datachecksSetup_UI("datachecks_setup")
     ),
     tabItem(
+      tabName = "results_instructions",
+      datachecksInstuctions_UI("resultspage")
+    ),
+    tabItem(
       tabName = "results_checks",
       datachecksResults_UI("datachecks_results")
+    ),
+    tabItem(
+      tabName = "design_instructions",
+      designInstuctions_UI("designpage")
+    ),
+    tabItem(
+      tabName = "design_specifications",
+      designSpecifications_UI("designSpecifications_module")
+    ),
+    tabItem(
+      tabName = "design_results",
+      designResults_UI("designResults_module")
+    ),
+    tabItem(
+      tabName = "download_instructions",
+      downloadInstuctions_UI("downloadspage")
+    ),
+    tabItem(
+      tabName = "download_download",
+      downloadResults_UI("download_module")
     ),
     tabItem(
       tabName = "help",

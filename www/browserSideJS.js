@@ -13,8 +13,8 @@ $(document).ready(function() {
 
 // Browser-side warnings
 $(document).on('shiny:inputchanged', function(event) {
-  
-      if (event.name === 'observerdata_upload-observer_year') {
+    
+     if (event.name === 'observerdata_upload-observer_year') {
         
         // 1. Find the picker element in the DOM
         let picker = $('#observerdata_upload-observer_year');
@@ -35,6 +35,33 @@ $(document).on('shiny:inputchanged', function(event) {
         
         // Trigger if Year is an option, something is selected, but Year is not part of it
         if (containsYear && selectedSomething && !selectedYear) {
+          warningDiv.show(); // Makes the text visible
+        } else {
+          warningDiv.hide(); // Hides the text immediately when condition is no longer met
+        }
+      }
+      
+      if (event.name === 'observerdata_upload-observer_catch') {
+       
+        // 1. Find the picker element in the DOM
+        let picker = $('#observerdata_upload-observer_catch');
+        let warningDiv = $('#observerdata_upload-observer_catchWarning2');
+        
+        // 2. Extract all currently available choices from the <option> tags
+        let allChoices = picker.find('option').map(function() {
+          return $(this).val();
+        }).get();
+        
+        // 3. Get the user's current selections
+        let selectedValues = [].concat(event.value || []);
+        
+        // 4. Check conditions entirely in the browser
+        let containsCatch = allChoices.includes('Catch');
+        let selectedCatch = selectedValues.includes('Catch');
+        let selectedSomething = selectedValues.length > 0;
+        
+        // Trigger if Year is an option, something is selected, but Year is not part of it
+        if (containsCatch && selectedSomething && !selectedCatch) {
           warningDiv.show(); // Makes the text visible
         } else {
           warningDiv.hide(); // Hides the text immediately when condition is no longer met
@@ -97,8 +124,6 @@ $(document).on('shiny:inputchanged', function(event) {
         let teamB = $('#datachecks_setup-logbook_aggregationcolumn').val() || [];
         let warningDiv = $('#datachecks_setup-logbook_aggregationcolumnWarning');
         
-        console.log(teamA)
-        console.log(teamB)
         // Compare the arrays to look for overlaps/duplicates
         // .some() checks if at least one item in teamA exists in teamB
         let hasOverlap = teamA.some(member => teamB.includes(member));
@@ -110,4 +135,89 @@ $(document).on('shiny:inputchanged', function(event) {
           warningDiv.hide();
         }
       }
-    });
+      
+      if (event.name === 'datachecks_setup-observer_effort') {
+       
+        // 1. Find the picker element in the DOM
+        let picker = $('#datachecks_setup-observer_effort');
+        let warningDiv = $('#datachecks_setup-observer_effortWarning');
+        
+        // 2. Extract all currently available choices from the <option> tags
+        let allChoices = picker.find('option').map(function() {
+          return $(this).val();
+        }).get();
+        
+        // 3. Get the user's current selections
+        let selectedValues = [].concat(event.value || []);
+        
+        // 4. Check conditions entirely in the browser
+        let containsEffort = allChoices.includes('Effort');
+        let selectedEffort = selectedValues.includes('Effort');
+        let selectedSomething = selectedValues.length > 0;
+        
+        // Trigger if Year is an option, something is selected, but Year is not part of it
+        if (containsEffort && selectedSomething && !selectedEffort) {
+          warningDiv.show(); // Makes the text visible
+        } else {
+          warningDiv.hide(); // Hides the text immediately when condition is no longer met
+        }
+      }
+      
+      if (event.name === 'datachecks_setup-logbook_effort') {
+       
+        // 1. Find the picker element in the DOM
+        let picker = $('#datachecks_setup-logbook_effort');
+        let warningDiv = $('#datachecks_setup-logbook_effortWarning');
+        
+        // 2. Extract all currently available choices from the <option> tags
+        let allChoices = picker.find('option').map(function() {
+          return $(this).val();
+        }).get();
+        
+        // 3. Get the user's current selections
+        let selectedValues = [].concat(event.value || []);
+        
+        // 4. Check conditions entirely in the browser
+        let containsEffort = allChoices.includes('Effort');
+        let selectedEffort = selectedValues.includes('Effort');
+        let selectedSomething = selectedValues.length > 0;
+        
+        // Trigger if Year is an option, something is selected, but Year is not part of it
+        if (containsEffort && selectedSomething && !selectedEffort) {
+          warningDiv.show(); // Makes the text visible
+        } else {
+          warningDiv.hide(); // Hides the text immediately when condition is no longer met
+        }
+      }
+      
+      if (event.name === 'datachecks_setup-logbook_aggregationcolumn') {
+       
+        // 1. Find the picker element in the DOM
+        let picker = $('#datachecks_setup-logbook_aggregationcolumn');
+        let warningDiv = $('#datachecks_setup-logbook_aggregationcolumnWarning2');
+        
+        // 2. Extract all currently available choices from the <option> tags
+        let allChoices = picker.find('option').map(function() {
+          return $(this).val();
+        }).get();
+        
+        // 3. Get the user's current selections
+        let selectedValues = [].concat(event.value || []);
+        
+        // 4. Check conditions entirely in the browser
+        let containsSample = allChoices.includes('SampleUnits');
+        let selectedSample = selectedValues.includes('SampleUnits');
+        let selectedSomething = selectedValues.length > 0;
+        
+        // Trigger if Year is an option, something is selected, but Year is not part of it
+        if (containsSample && selectedSomething && !selectedSample) {
+          warningDiv.show(); // Makes the text visible
+        } else {
+          warningDiv.hide(); // Hides the text immediately when condition is no longer met
+        }
+      }
+      
+      
+
+
+});

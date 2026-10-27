@@ -18,17 +18,17 @@ landingpage_UI <- function(id){
         column(12,
                p("The BycatchEstimator app is an alternative interface to the BycatchEstimator R package. The app is organized as:"),
                tags$ol(
-                 tags$li(strong("Data upload"),": where the user is required to attach their observer data and logbook data."),
-                 tags$li(strong("Data checks setup"),": where the user needs to specify the data structures for both data sets and 
-                 variables that are important to consider for bycatch estimation."),
-                 tags$li(strong("Data checks results"),": after running data checks, the tool will produce a number of outputs that can be downloaded as a zip folder.")
+                 tags$li(strong("Bycatch setup"),": upload observer data and logbook data."),
+                 tags$li(strong("Data checks"),": review data inputs through statistical summaries and plots, making sure data are appropriate for bycatch estimation."),
+                 tags$li(strong("Design-based estimators"),": produce estimates of bycatch by expanding a sample, such as an observer database to the total effort from logbooks or landings records."),
+                 tags$li(strong("Download outputs"),": retain outputs that can be downloaded within a zip folder.")
                ),
-               p("In the ",strong("Help"), "page, the user can find example data sets that can be downloaded, and links to the R package documentation."),
+               p("On the ",strong("Help"), "page, links are provided to this web application's user guide and related R package documentation."),
                  
                             
                tags$img(
-                 src = "workflow_diagram.png",  
-                 width = "50%",        
+                 src = "workflow_diagram2.png",  
+                 style="display: block; padding-top: 20px; margin: 0 auto; width: 60%;",        
                  alt = "Workflow")    
                
        )

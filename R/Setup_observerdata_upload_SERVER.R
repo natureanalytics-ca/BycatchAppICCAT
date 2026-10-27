@@ -195,6 +195,7 @@ observerupload_SERVER <- function(id){
               is.null(input$observer_catchunits) ||
               is.null(input$observer_catchtype) ||
               isTRUE("Year" %in% names(previewObserverdata()) && input$observer_year != "Year") ||
+              isTRUE("Catch" %in% names(previewObserverdata()) && input$observer_catch != "Catch") ||
               isTRUE(input$observer_year == input$observer_catch)
           )
         )
