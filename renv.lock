@@ -84,7 +84,7 @@
       "RemoteRepo": "BycatchEstimator",
       "RemoteUsername": "ebabcock",
       "RemoteRef": "testing",
-      "RemoteSha": "8b5bff04fa0aaf836fd9b53c1aeaf2f3d9a7ee15",
+      "RemoteSha": "05dd9d26f72477d57db46a4ff2d04346e4545a71",
       "NeedsCompilation": "no",
       "Author": "Elizabeth Babcock [aut, cre], William Harford [aut, ctb], Ana Adao [aut, ctb]",
       "Maintainer": "Elizabeth Babcock <ebabcock@rsmas.miami.edu>"

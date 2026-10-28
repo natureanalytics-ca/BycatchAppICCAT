@@ -126,7 +126,7 @@ datachecksSetup_SERVER <- function(id, observerdataInput = reactive(NULL), logbo
         # Insert UI into placeholder structure safely
         insertUI(
           selector = paste0("#", session$ns("factor_insertUI")),
-          where = "afterBegin",
+          where = "beforeEnd",
           session = session,
           ui = tags$div(
             id = session$ns(key), 
@@ -239,11 +239,11 @@ datachecksSetup_SERVER <- function(id, observerdataInput = reactive(NULL), logbo
       })
       
       observe({
-        shinyjs::toggle("warningFactorObserver", condition = !is.null(input$observer_effort) && !is.null(bind_rows(compiledFactorPairs())[['observer']]) && grepl(bind_rows(compiledFactorPairs())$observer, input$observer_effort)) 
+        shinyjs::toggle("warningFactorObserver", condition = !is.null(input$observer_effort) && !is.null(bind_rows(compiledFactorPairs())[['observer']]) && any(grepl(input$observer_effort, bind_rows(compiledFactorPairs())$observer))) 
       })
       
       observe({
-        shinyjs::toggle("warningFactorLogbook", condition = !is.null(input$logbook_effort) && !is.null(bind_rows(compiledFactorPairs())[['logbook']]) && grepl(bind_rows(compiledFactorPairs())$logbook, input$logbook_effort)) 
+        shinyjs::toggle("warningFactorLogbook", condition = !is.null(input$logbook_effort) && !is.null(bind_rows(compiledFactorPairs())[['logbook']]) && any(grepl(input$logbook_effort, bind_rows(compiledFactorPairs())$logbook))) 
       })
       
       # ==============================================================================
@@ -661,8 +661,8 @@ datachecksSetup_SERVER <- function(id, observerdataInput = reactive(NULL), logbo
           isTRUE(length(compiledFactorPairs()) > 0 && is.null(bind_rows(compiledFactorPairs())[['logbook']])) ||     
           isTRUE(length(compiledFactorPairs()) > 0 && any(is.na(bind_rows(compiledFactorPairs())$observer))) ||
           isTRUE(length(compiledFactorPairs()) > 0 && any(is.na(bind_rows(compiledFactorPairs())$logbook))) ||
-          isTRUE(length(compiledFactorPairs()) > 0 && grepl(bind_rows(compiledFactorPairs())$observer, input$observer_effort)) ||
-          isTRUE(length(compiledFactorPairs()) > 0 && grepl(bind_rows(compiledFactorPairs())$logbook, input$logbook_effort))
+          isTRUE(length(compiledFactorPairs()) > 0 && any(grepl(input$observer_effort, bind_rows(compiledFactorPairs())$observer))) ||
+          isTRUE(length(compiledFactorPairs()) > 0 && any(grepl(input$logbook_effort, bind_rows(compiledFactorPairs())$logbook)))
           #When numeric factors included, checks are need here for unique values and can be factor or numeric, not both (b/c of dataset renaming)
         ){
           showModal(
@@ -716,7 +716,7 @@ datachecksSetup_SERVER <- function(id, observerdataInput = reactive(NULL), logbo
                 rename(!!bldFactor$observer[i] := !!bldFactor$logbook[i])
             }
           }
-          
+
           # Run bycatchSetup function
           tryCatch({ # for debugging
             setupObj <- BycatchEstimator::bycatchSetup(
@@ -759,19 +759,19 @@ datachecksSetup_SERVER <- function(id, observerdataInput = reactive(NULL), logbo
               scientific_name = input$spp_scientificname,
               run_description = input$datachecks_name
             )
-            
+
             bycatchsetup_inputs_df <- data.frame(
               name = names(bycatchsetup_inputs),
               value = unlist(bycatchsetup_inputs, use.names = FALSE),
               stringsAsFactors = FALSE)
             write.csv(bycatchsetup_inputs_df, paste0(outDir,"/bycatch_inputs.csv"),row.names = FALSE)
-             
+
             # save data sets in outDir
             write.csv(observer_dt, paste0(outDir,"/observer_dataset.csv"),row.names = FALSE)
             write.csv(logbook_dt, paste0(outDir,"/logbook_dataset.csv"),row.names = FALSE)
-            
+
             resultsDir(list(active = TRUE, setupObj = setupObj, bycatchsetup_inputs = bycatchsetup_inputs))
-            
+
             showModal(
               modalDialog(
                 title = div(icon("circle-check", style = "color: #198754;"), div("Activation completed", style = "display: inline; padding-left: 5px;")),

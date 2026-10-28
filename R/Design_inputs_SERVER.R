@@ -19,6 +19,7 @@ designSpecifications_SERVER <- function(id, bycatchSetup, outDir){
       #-----------------------------
       #Retain information
       #-----------------------------
+      rowKeysStrat <- reactiveVal(character(0))
       resultsActive <- reactiveVal(FALSE)
 
       # ==============================================================================
@@ -43,8 +44,6 @@ designSpecifications_SERVER <- function(id, bycatchSetup, outDir){
 
         if(bycatchSetup()$active){
           col_names <- bycatchSetup()$setupObj$bycatchInputs$factorVariables
-          updatePickerInput(session = session, inputId = "strat_var", choices = col_names, selected = character(0))
-          shinyjs::enable("strat_var")
           updatePickerInput(session = session, inputId = "group_var", choices = col_names, selected = character(0))
           shinyjs::enable("group_var")
           
@@ -52,6 +51,13 @@ designSpecifications_SERVER <- function(id, bycatchSetup, outDir){
           updatePickerInput(session = session, inputId = "strat_var", choices = character(0))
           updatePickerInput(session = session, inputId = "group_var", choices = character(0))
         }
+        
+        # --- STEP 5: CLEANUP FACTOR PATHWAYS ---
+        removeUI(
+          selector = paste0("#", session$ns("addStrat_var_insertUI"), " > div"),
+          multiple = TRUE
+        )
+        rowKeysStrat(character(0))
         
         resultsActive(FALSE)
         
@@ -146,8 +152,146 @@ designSpecifications_SERVER <- function(id, bycatchSetup, outDir){
         )
       })
 
-
+      # ==============================================================================
+      # 3. Dynamic design stratification variable allocation layout (UI Generator)
+      # ==============================================================================
       
+      observeEvent(input$addStrat_var, {
+        # Build isolated component structural IDs
+        
+        key <- paste0("rowStrat_", as.integer(input$addStrat_var))
+        picker1ID <- paste0(key, "_pickerDesignVar")
+        picker2ID <- paste0(key, "_pickerPoolType")
+        picker3ID <- paste0(key, "_pickerPoolVar")
+        picker4ID <- paste0(key, "_pickerAdjacentNum")
+        btnID    <- paste0(key, "_removeStratFactor")
+
+        # Insert UI into placeholder structure safely
+        insertUI(
+          selector = paste0("#", session$ns("addStrat_var_insertUI")),
+          where = "beforeEnd",
+          session = session,
+          ui = tags$div(
+            id = session$ns(key), 
+            div(
+              style = "margin: 10px 0px; border: 1px solid #ADB5BD; border-radius: 5px; padding: 10px;",
+              
+              fluidRow(
+                column(4,
+                       div(tags$strong("Design stratification variable"), style = "margin-bottom: 10px;"),
+                       pickerInput(
+                         inputId = session$ns(picker1ID), 
+                         label = tagList(tags$strong("Select factor"), div("*", style = "display: inline; color: red;")),
+                         choices = bycatchSetup()$setupObj$bycatchInputs$factorVariables,
+                         selected = character(0),
+                         width = '100%', 
+                         multiple = TRUE,
+                         options = pickerOptions(
+                           maxOptions = 1
+                         )
+                       )
+                ),
+                column(8,
+                       div(
+                         style = "float: right; margin: 0px;",
+                         actionBttn(inputId = session$ns(btnID), label = "Remove", size = "xs")
+                       ),
+                       div(tags$strong("Pooling"), style = "margin-bottom: 10px;"),
+                       pickerInput(
+                         inputId = session$ns(picker2ID), 
+                         label = tagList(tags$strong("Pooling type"), div("*", style = "display: inline; color: red;")),
+                         choices = c("none", "all", "pooledVar", "adjacent"),
+                         selected = "none",
+                         width = '100%', 
+                         multiple = FALSE#,
+                         #options = pickerOptions(
+                        #   maxOptions = 1
+                        # )
+                       ),
+                       pickerInput(
+                         inputId = session$ns(picker3ID), 
+                         label = tags$strong("New variable (select if Pooling type is 'pooledVar')"),
+                         choices = bycatchSetup()$setupObj$bycatchInputs$factorVariables,
+                         selected = character(0),
+                         width = '100%', 
+                         multiple = TRUE,
+                         options = pickerOptions(
+                           maxOptions = 1
+                         )
+                       ),
+                       numericInput(
+                         inputId = session$ns(picker4ID), 
+                         label = tags$strong("Number of adjacent years (select if Pooling type is 'adjacent')"),
+                         value = 1,
+                         min = 1,
+                         max = 5,
+                         width = '100%'
+                       )
+                       
+                )
+              )
+            )
+          )
+        )
+        
+        # Wholesale reassignment -- this is what makes downstream reactives
+        # correctly re-fire.
+        rowKeysStrat(c(rowKeysStrat(), key))
+      })
+      
+      
+      
+      # ==============================================================================
+      # 4. Global Observer tracking Dynamic Factors (Prevents Memory Leaks)
+      # ==============================================================================
+      # Instead of nested observers, use one global observer tracking input changes
+      observe({
+        keys <- rowKeysStrat()
+        
+        for (key in keys) {
+          removeID <- paste0(key, "_removeStratFactor")
+          btn_val <- input[[removeID]]
+          
+          if (!is.null(btn_val) && btn_val > 0) {
+            removeUI(selector = paste0("#", session$ns(key)))
+            rowKeysStrat(setdiff(rowKeysStrat(), key)) # wholesale reassignment again
+          }
+        }
+      })
+      
+      compiledStratPairs <- reactive({
+        keys <- rowKeysStrat()
+
+        if (length(keys) == 0) return(list())
+
+        pairs_list <- lapply(keys, function(key) {
+          p1 <- input[[paste0(key, "_pickerDesignVar")]]
+          p2 <- input[[paste0(key, "_pickerPoolType")]]
+          p3 <- input[[paste0(key, "_pickerPoolVar")]]
+          p4 <- input[[paste0(key, "_pickerAdjacentNum")]]
+          
+          warnStrat <- FALSE
+          if(is.null(p1)) warnStrat <- TRUE
+          if(!is.null(p1) && p1 != "Year" && p2 == "adjacent") warnStrat <- TRUE
+          if(!is.null(p1) && p1 == "Year" && p2 == "adjacent" && is.na(p4)) warnStrat <- TRUE
+          if(!is.null(p1) && p1 == "Year" && p2 == "adjacent" && !is.na(p4) && p4 < 1) warnStrat <- TRUE
+          if(!is.null(p1) && p2 == "pooledVar" && is.null(p3)) warnStrat <- TRUE
+          
+          # Store elements inside a clean lookup list structured by ID key
+          list(designVar = p1,  poolType= p2, poolVar = p3, adjacentNum = p4, warnStrat = warnStrat)
+        })
+
+        names(pairs_list) <- keys
+        return(pairs_list)
+      })
+      
+      observe({
+        req(compiledStratPairs())
+        warnStrat <- any(bind_rows(compiledStratPairs())[['warnStrat']])
+        shinyjs::toggle("warningStrat", condition = warnStrat) 
+      })
+      
+
       ## Button for running data checks
       observeEvent(input$run_design, {
 
@@ -158,9 +302,11 @@ designSpecifications_SERVER <- function(id, bycatchSetup, outDir){
         if(
           !bycatchSetup()$active ||
           is.null(input$analysis_method) ||
-          is.null(input$strat_var) ||
-          #!("Year" %in% input$strat_var) ||
-          !nzchar(input$design_name)
+          !nzchar(input$design_name) ||
+          is.na(input$minStrataUnit) ||
+          input$minStrataUnit < 1 ||
+          length(compiledStratPairs()) == 0 ||
+          isTRUE(length(compiledStratPairs()) > 0 && any(bind_rows(compiledStratPairs())[['warnStrat']])) 
         ){
           showModal(
             modalDialog(
@@ -186,27 +332,50 @@ designSpecifications_SERVER <- function(id, bycatchSetup, outDir){
           tryCatch({ # for debugging
             #create list of inputs to be saved in resultsDir
             
+            
+            #Design vars as table
+            designTmp <- bind_rows(compiledStratPairs())
+            
+            designVars <- designTmp$designVar
+            
+            designPooling <- FALSE
+            if(any(designTmp$poolType != "none")) designPooling <- TRUE
+            
+            poolTypes <- designTmp$poolType
+            
+            pooledVar <- rep(NA, length(designVars))
+            if(!is.null(designTmp[['poolVar']])) pooledVar <- designTmp$poolVar
+            
+            adjacentNum <- rep(NA, length(designVars))
+            adjacentNum[which(designTmp$poolType == "adjacent")] <- designTmp$adjacentNum[which(designTmp$poolType == "adjacent")]
+            
             varTmp <- input$group_var
             if(is.null(input$group_var)) varTmp <- NA
+            
+            # print(designVars)
+            # print(designPooling)
+            # print(poolTypes)
+            # print(pooledVar)
+            # print(adjacentNum)
             
             BycatchEstimator::bycatchDesign(
               setupObj = bycatchSetup()$setupObj,
               designScenario = input$design_name,
               designMethods = input$analysis_method,
               groupVar = varTmp,
-              designVars = input$strat_var
-              #designPooling = TRUE,
-              #poolTypes=c("adjacent","all","none"),
-              #pooledVar=c(NA,NA,NA),
-              #adjacentNum=c(1,NA,NA),
-              #minStrataUnit = 1
+              designVars = designVars,
+              designPooling = designPooling,
+              poolTypes=poolTypes,
+              pooledVar=pooledVar,
+              adjacentNum=adjacentNum,
+              minStrataUnit = input$minStrataUnit
             )
 
             resultsActive(TRUE)
             
             showModal(
               modalDialog(
-                title = div(icon("circle-check", style = "color: #007bff;"), div("Analysis completed", style = "display: inline; padding-left: 5px;")),
+                title = div(icon("circle-check", style = "color: #198754;"), div("Analysis completed", style = "display: inline; padding-left: 5px;")),
                 tags$ul(
                   tags$li("Anaysis was successful"),
                   tags$li("Proceed to Analysis results")
@@ -241,7 +410,7 @@ designSpecifications_SERVER <- function(id, bycatchSetup, outDir){
           })
         }
       })
-
+  
       observeEvent(input$deactivate, {
         on.exit({
           shinyjs::runjs("document.getElementById('ui-shield').style.display = 'none';")

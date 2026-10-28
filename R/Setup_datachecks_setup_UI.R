@@ -347,10 +347,10 @@ datachecksSetup_UI <- function(id){
                       )
                     )
                   ),
+                  uiOutput(ns("yearPlaceholder")),
                   tags$div(id = ns("factor_insertUI"))
                 )
-              ),
-              uiOutput(ns("yearPlaceholder"))
+              )
             ),
             hidden(
             timelineItem(

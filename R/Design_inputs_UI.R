@@ -108,13 +108,33 @@ designSpecifications_UI <- function(id){
               fluidRow(
                 column(
                   12,
-                  pickerInput(
-                    inputId = ns("strat_var"),
-                    label = tagList("Select design stratification variable(s)", div("*", style = "display: inline; color: red;")),
-                    choices = NULL,
-                    width = '100%',
-                    multiple = TRUE
-                  )
+                  div(
+                    style = "display: flex; flex-direction: row; justify-content: space-between; align-items: flex-start;",
+                    div(
+                      style = "margin-bottom: 10px;",
+                      actionBttn(
+                        inputId = ns("addStrat_var"),
+                        label = tagList("Add variable", div("*", style = "display: inline; color: red;"))
+                      ),
+                      div(
+                        id = ns("warningStrat"),
+                        style = "color: red; font-weight: bold; margin-right: 5px; display: none;",
+                        "Warning: One or more selections are incompatible.",
+                        br(),
+                        "See info icon for additional assistance."
+                      )
+                    ),
+                    div(
+                      numericInput(
+                        inputId = ns("minStrataUnit"), 
+                        label = tags$strong("Minimum stratification unit"),
+                        value = 1,
+                        min = 1,
+                        max = NA
+                      )
+                    )
+                  ),
+                  tags$div(id = ns("addStrat_var_insertUI"))
                 )
               )
             ),
