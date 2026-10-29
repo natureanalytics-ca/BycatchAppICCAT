@@ -98,12 +98,15 @@ datachecksSetup_UI <- function(id){
                       style = "width: 600px; font-weight: normal;",
                       "Tips for aligning fishing effort:",
                       tags$ul(
-                        tags$li("Select the column names in the observer data and corresponding names in the logbook data for fishing effort. Another time step other than year can be used."),
-                        tags$li("Indicate what is the sample unit is in the observer data (each row should represent a trip or set)."),
+                        tags$li("Select the column names in the observer data and corresponding names in the logbook data for fishing effort."),
+                        tags$li("Create a label for the sample unit is in the observer data (each row should represent a trip or set)."),
+                        br(),
                         tags$li("Indicate whether the logbook data is structured in the same way. If not, the logbook data is likely to be further aggregated."),
-                        tags$li("If further aggregated, indicate what is the column in the logbook data that contains the number of sample units per row."),
+                        tags$li("If further aggregated, indicate the data column in the logbook data that contains the number of sample units per row."),
                         tags$li("For example, if the sample unit in the observer data is trips, but the logbook data is aggregated by year and area, the user should have a column that defines the number of logbook trips by year and area."),
-                        tags$li(tags$strong("Setting up fishing effort is tricky!"), "See the expandable list of alternative effort configuration for assistance in setting up your own datasets.")
+                        br(),
+                        tags$li(tags$strong("Setting up fishing effort is tricky!"), "See the expandable list of alternative effort configuration for assistance in setting up your own datasets."),
+                        tags$li("If your variable name is missing from the list, review user guide section on Protected names.")
                       )
                     ))
                 ),
@@ -309,10 +312,11 @@ datachecksSetup_UI <- function(id){
                       tags$ul(
                         tags$li("Specify variables that should be interpreted as factors."),
                         tags$li("Year is required and has been populated for you (no need to repeat this entry)."),
-                        br(),
+                        tags$li("If your variable name is missing from the list, review user guide section on Protected names."),
                         br(),
                         tags$li("Factors are selected by clicking on add a variable and choosing a column name from the observer dataset and matching it with the corresponding column name in the logbook dataset."),
                         tags$li("Column names from the observer dataset and logbook dataset should almost always be identical."),
+                        br(),
                         tags$li("In cases where names do not match, re-naming of the logbook factor will occur using the name from the observer dataset."),
                         tags$li("Matching factor names are required for analysis."),
                         tags$li("Re-naming can sometimes cause data processing errors. Please use care when choosing to re-name variables.")

@@ -5,7 +5,7 @@ account: natureanalytics
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 15082055
-bundleId: 12572965
+bundleId: 12756202
 url: https://natureanalytics.shinyapps.io/BycatchEstimator/
 version: 1
 asMultiple: FALSE

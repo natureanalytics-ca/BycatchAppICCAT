@@ -40,7 +40,7 @@ downloadResults_SERVER <- function(id, bycatchSetup, outDir){
                 style = "width: 600px; font-weight: normal;",
                 tags$strong("Bycatch setup"),
                 tags$ul(
-                  tags$li("The zip folder contains observer and logbook data sets uploaded by the user (logbook_dataset and observer_dataset)."), 
+                  tags$li("The zip folder contains observer and logbook data sets used in the analysis (logbook_dataset and observer_dataset)."), 
                   tags$li("A summary of the inputs defined in the app by the user (bycatch_inputs)."),
                   tags$li("Two files labelled as DataSummary and StrataSummary which contain data summaries by year and factor variables."),
                   tags$li("An .rds file that can be read in R.")

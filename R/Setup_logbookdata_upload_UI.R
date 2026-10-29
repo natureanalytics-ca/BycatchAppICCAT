@@ -73,7 +73,7 @@ logbookupload_UI <- function(id){
                     tags$ul(
                       tags$li("A logbook data set is mandatory."),
                       tags$li("CSV file format only"),
-                      tags$li("Example data sets are available on the Home page."),
+                      tags$li("Example data sets are available on the Instructions page."),
                       tags$li("Files larger than 100 MB will not be uploaded.")
                     )
                   )
@@ -122,7 +122,8 @@ logbookupload_UI <- function(id){
                       style = "width: 600px; font-weight: normal;",
                       h6("Select the name of the column in the logbook dataset that contains:"),
                       tags$ul(
-                        tags$li("Year")
+                        tags$li("Year"),
+                        tags$li("If your variable name is missing from the list, review user guide section on Protected names.")
                       )
                     ))
                 ),

@@ -49,7 +49,7 @@ datachecksSetup_SERVER <- function(id, observerdataInput = reactive(NULL), logbo
         
         # --- STEP 3: OBSERVER DATA PROFILE EVALUATION ---
         if (!is.null(observerdataInput()$dt)) {
-          obs_cols <- setdiff(names(observerdataInput()$dt), c(observerdataInput()$observer_year, observerdataInput()$observer_catch))
+          obs_cols <- setdiff(names(observerdataInput()$dt), c("Year", "Catch", "SampleUnits", observerdataInput()$observer_year, observerdataInput()$observer_catch))
           updatePickerInput(session = session, inputId = "observer_effort", choices = obs_cols, selected = character(0))
           shinyjs::enable("observer_effort")
         } else {
@@ -58,8 +58,10 @@ datachecksSetup_SERVER <- function(id, observerdataInput = reactive(NULL), logbo
         
         # --- STEP 4: LOGBOOK DATA PROFILE EVALUATION (FIXED LOGIC CHECK) ---
         if (!is.null(logbookdataInput()$dt)) {
-          log_cols <- setdiff(names(logbookdataInput()$dt), logbookdataInput()$logbook_year)
+          log_cols <- setdiff(names(logbookdataInput()$dt), c("Year", "Catch", "SampleUnits", logbookdataInput()$logbook_year))
           updatePickerInput(session = session, inputId = "logbook_effort", choices = log_cols, selected = character(0))
+          
+          log_cols <- setdiff(names(logbookdataInput()$dt), c("Year", "Catch", "Effort", logbookdataInput()$logbook_year))
           updatePickerInput(session = session, inputId = "logbook_aggregationcolumn", choices = log_cols, selected = character(0))
           
           # FIXED: Restored the correct enable targeting for logbook_effort
@@ -139,7 +141,7 @@ datachecksSetup_SERVER <- function(id, observerdataInput = reactive(NULL), logbo
                    pickerInput(
                      inputId = session$ns(picker1ID), 
                      label = tagList(tags$strong("Select data column as factor"), div("*", style = "display: inline; color: red;")),
-                     choices = setdiff(names(observerdataInput()$dt), c(observerdataInput()$observer_year, observerdataInput()$observer_catch)),
+                     choices = setdiff(names(observerdataInput()$dt), c("Year", "Catch", "Effort", "SampleUnits", observerdataInput()$observer_year, observerdataInput()$observer_catch)),
                      selected = character(0),
                      width = '100%', 
                      multiple = TRUE,
@@ -157,7 +159,7 @@ datachecksSetup_SERVER <- function(id, observerdataInput = reactive(NULL), logbo
                    pickerInput(
                      inputId = session$ns(picker2ID), 
                      label = tagList(tags$strong("Select", tags$em("corresponding", style = "color: #0d6efd;"),  "factor"), div("*", style = "display: inline; color: red;")),
-                     choices = setdiff(names(logbookdataInput()$dt), logbookdataInput()$logbook_year),
+                     choices = setdiff(names(logbookdataInput()$dt), c("Year", "Catch", "Effort", "SampleUnits", logbookdataInput()$logbook_year)),
                      selected = character(0),
                      width = '100%', 
                      multiple = TRUE,
@@ -474,6 +476,12 @@ datachecksSetup_SERVER <- function(id, observerdataInput = reactive(NULL), logbo
         bldNumeric <- compiledNumericPairs() # Assumed to follow the same list structure
         tagList(
           tags$strong(tags$em("Activation complete")),
+          br(),
+          HTML(paste(tags$strong("Bycatch setup label:"), tags$em(input$datachecks_name, style = "color: #007bff;"))),
+          br(),
+          HTML(paste(tags$strong("Common name:"), tags$em(input$spp_name, style = "color: #007bff;"))),
+          br(),
+          HTML(paste(tags$strong("Scientific name:"), tags$em(input$spp_scientificname, style = "color: #007bff;"))),
           div(
             style = "float: right;",
             shinyWidgets::dropdown(
@@ -504,7 +512,7 @@ datachecksSetup_SERVER <- function(id, observerdataInput = reactive(NULL), logbo
             
             # Title Row
             fluidRow(
-              column(4, tags$strong("Title:")),
+              column(4, tags$strong("Dataset label:")),
               column(4, div(style = "color: #007bff;", observerdataInput()$title)),
               column(4, div(style = "display: inline; color: #007bff;", logbookdataInput()$title))
             ),
@@ -525,14 +533,14 @@ datachecksSetup_SERVER <- function(id, observerdataInput = reactive(NULL), logbo
             
             # Units of Catch Row
             fluidRow(
-              column(4, tags$strong("Units of catch:")),
+              column(4, tags$strong("Units of catch label:")),
               column(4, div(style = "color: #007bff;", observerdataInput()$observer_catchunits)),
               column(4)
             ),
             
             # Catch Type Row
             fluidRow(
-              column(4, tags$strong("Catch type:")),
+              column(4, tags$strong("Catch type label:")),
               column(4, div(style = "color: #007bff;", observerdataInput()$observer_catchtype)),
               column(4)
             ),
@@ -565,7 +573,7 @@ datachecksSetup_SERVER <- function(id, observerdataInput = reactive(NULL), logbo
             
             # Sample Unit Row
             fluidRow(
-              column(4, tags$strong("Sample unit:")),
+              column(4, tags$strong("Sample unit label:")),
               column(4, div(style = "color: #007bff;", input$observer_sampleunit)),
               column(4, div(style = "color: #007bff;", input$logbook_sampleunit))
             ),

@@ -140,14 +140,14 @@ observerupload_SERVER <- function(id){
           updatePickerInput(
             session = session, 
             inputId = "observer_catch", 
-            choices = cols,
+            choices = setdiff(cols, c("Year", "Effort", "SampleUnits")),
             selected = character(0)
           )
           
           updatePickerInput(
             session = session, 
             inputId = "observer_year", 
-            choices = cols,
+            choices = setdiff(cols, c("Catch", "Effort", "SampleUnits")),
             selected = character(0)
           )
           

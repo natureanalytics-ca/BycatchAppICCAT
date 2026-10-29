@@ -77,7 +77,7 @@ logbookupload_SERVER <- function(id){
           shinyjs::show("logBookInputs")
         } else {
           # Hide controls if file failed to load
-          previewObserverdata(NULL)
+          previewLogbookdata(NULL)
           shinyjs::hide("preview")
           shinyjs::hide("finalize")
           shinyjs::hide("logBookInputs")
@@ -118,7 +118,7 @@ logbookupload_SERVER <- function(id){
           updatePickerInput(
             session = session,
             inputId = "logbook_year",
-            choices = names(previewLogbookdata()),
+            choices = setdiff(names(previewLogbookdata()), c("Catch", "Effort", "SampleUnits")),
             selected = character(0)
           )
           shinyjs::enable("logbook_year")
