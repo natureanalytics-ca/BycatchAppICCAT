@@ -98,8 +98,17 @@ designSpecifications_UI <- function(id){
                       tags$ul(
                         tags$li("Select one or more design stratifiction variables to be used in design-based stratification."),
                         tags$li("Total bycatch estimates are made at each level of the selected stratification variables."),
-                        
-                      )
+                      ),
+                      br(),
+                      "Pooling is also specified in this step",
+                      tags$ul(
+                        tags$li("Pooling type 'adjacent' is only available for Year variable."),
+                        tags$li("If 'adjacent is used, ensure that Number of adjacent years is greater than 0."),
+                        tags$li("Pooling type 'pooledVar' applies an alternate variable to the selected stratification variable."),
+                        tags$li("If 'pooledVar' is used, the name of the alternate variable must be specified."),
+                        tags$li("Minimum stratification unit is the minimum number of sample units in a stratum to require pooling."),
+                        tags$li("If any pooling is applied, Minimum stratification unit must be greater than 0.")
+                      ),
                     ))
                 ),
                 "Select design stratification variable(s)"
@@ -227,7 +236,6 @@ designSpecifications_UI <- function(id){
                     size = "sm",
                     div(
                       style = "width: 600px; font-weight: normal;",
-                      "Tips for aligning fishing effort:",
                       tags$ul(
                         tags$li("Maximum of 100 characters for the title.")
                       )
@@ -235,13 +243,13 @@ designSpecifications_UI <- function(id){
                 ),
                 "Scenario name"
               ),
-              icon = icon("5"),
+              icon = icon("4"),
               fluidRow(
                 column(
                   12,
                   textInput(
                     inputId = ns("design_name"),
-                    label = tagList(tags$strong("Specify a scenario name"), div("*", style = "display: inline; color: red;")),
+                    label = tagList(tags$strong("Create a label or name for scenario"), div("*", style = "display: inline; color: red;")),
                     width = '100%'
                   )
                 )
@@ -268,7 +276,7 @@ designSpecifications_UI <- function(id){
                 ),
                 "Run analysis"
               ),
-              icon = icon("6"),
+              icon = icon("5"),
               fluidRow(
                 column(
                   12,

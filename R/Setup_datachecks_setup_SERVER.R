@@ -138,7 +138,7 @@ datachecksSetup_SERVER <- function(id, observerdataInput = reactive(NULL), logbo
                    div(icon("binoculars"), HTML("&nbsp;"), tags$strong("Observer dataset"), style = "margin-bottom: 10px;"),
                    pickerInput(
                      inputId = session$ns(picker1ID), 
-                     label = tagList(tags$strong("Select factor"), div("*", style = "display: inline; color: red;")),
+                     label = tagList(tags$strong("Select data column as factor"), div("*", style = "display: inline; color: red;")),
                      choices = setdiff(names(observerdataInput()$dt), c(observerdataInput()$observer_year, observerdataInput()$observer_catch)),
                      selected = character(0),
                      width = '100%', 
@@ -238,12 +238,28 @@ datachecksSetup_SERVER <- function(id, observerdataInput = reactive(NULL), logbo
         return(pairs_list)
       })
       
+      compiledFactorPairsWarn <- reactive({
+        dtTmp <- bind_rows(compiledFactorPairs())
+        
+        pairsWarn <- FALSE
+        if(length(dtTmp) > 0){
+          for(i in 1:length(dtTmp)){
+            if(dtTmp[['observer']][i] %in% dtTmp[['logbook']][-i]) pairsWarn <- TRUE
+          }
+        }
+        pairsWarn
+      })  
+      
       observe({
         shinyjs::toggle("warningFactorObserver", condition = !is.null(input$observer_effort) && !is.null(bind_rows(compiledFactorPairs())[['observer']]) && any(grepl(input$observer_effort, bind_rows(compiledFactorPairs())$observer))) 
       })
       
       observe({
         shinyjs::toggle("warningFactorLogbook", condition = !is.null(input$logbook_effort) && !is.null(bind_rows(compiledFactorPairs())[['logbook']]) && any(grepl(input$logbook_effort, bind_rows(compiledFactorPairs())$logbook))) 
+      })
+      
+      observe({
+        shinyjs::toggle("warningFactorMismatch", condition = compiledFactorPairsWarn()) 
       })
       
       # ==============================================================================
@@ -655,6 +671,7 @@ datachecksSetup_SERVER <- function(id, observerdataInput = reactive(NULL), logbo
           isTRUE(input$logbook_sampleunit == "Aggregated further" && is.null(input$logbook_aggregationcolumn)) ||
           isTRUE(input$logbook_sampleunit == "Aggregated further" && input$logbook_aggregationcolumn == input$logbook_effort) ||
           isTRUE(input$logbook_sampleunit == "Aggregated further" && "SampleUnits" %in% names(logbookdataInput()$dt) && input$logbook_aggregationcolumn != "SampleUnits") ||
+          compiledFactorPairsWarn() ||
           isTRUE(length(compiledFactorPairs()) > 0 && any(duplicated(bind_rows(compiledFactorPairs())$observer))) ||
           isTRUE(length(compiledFactorPairs()) > 0 && any(duplicated(bind_rows(compiledFactorPairs())$logbook))) ||
           isTRUE(length(compiledFactorPairs()) > 0 && is.null(bind_rows(compiledFactorPairs())[['observer']])) ||
@@ -706,7 +723,11 @@ datachecksSetup_SERVER <- function(id, observerdataInput = reactive(NULL), logbo
             dplyr::rename("Effort" := !!input$observer_effort)
           
           logbook_dt <- logbookdataInput()$dt %>%
-            select(any_of(c(logbookdataInput()$logbook_year, input$logbook_effort,  bldFactor$logbook))) %>%
+            {if(input$logbook_sampleunit == "Aggregated further") 
+              select(., any_of(c(logbookdataInput()$logbook_year, input$logbook_effort, input$logbook_aggregationcolumn, bldFactor$logbook)))
+              else select(., any_of(c(logbookdataInput()$logbook_year, input$logbook_effort,  bldFactor$logbook)))
+              } %>%  #Select columns
+            {if(input$logbook_sampleunit == "Aggregated further")  dplyr::rename(., "SampleUnits" := !!input$logbook_aggregationcolumn) else .} %>%
             dplyr::rename("Year" := !!logbookdataInput()$logbook_year) %>%
             dplyr::rename("Effort" := !!input$logbook_effort)
           
@@ -728,7 +749,7 @@ datachecksSetup_SERVER <- function(id, observerdataInput = reactive(NULL), logbo
               obsCatch = "Catch", #Yes
               catchUnit = observerdataInput()$observer_catchunits, #Yes
               catchType = observerdataInput()$observer_catchtype, #Yes
-              logNum = if (input$logbook_sampleunit == "Aggregated further") input$logbook_aggregationcolumn else NA, #Yes
+              logNum = if (input$logbook_sampleunit == "Aggregated further") "SampleUnits" else NA, #Yes
               sampleUnit = input$observer_sampleunit, #Yes
               factorVariables = c("Year", unique(c(bldFactor$observer))), #UI will not allow Year to be selected, so added here.
               numericVariables = unique(bldNumeric$observer), #Yes

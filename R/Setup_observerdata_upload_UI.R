@@ -134,7 +134,7 @@ observerupload_UI <- function(id){
                   12,
                   pickerInput(
                     inputId = ns("observer_year"),
-                    label = tagList("Select column that contains year", div("*", style = "display: inline; color: red;")),
+                    label = tagList("Select data column that contains year", div("*", style = "display: inline; color: red;")),
                     choices = NULL,
                     width = '100%',
                     multiple = TRUE,
@@ -192,7 +192,7 @@ observerupload_UI <- function(id){
                   12,
                   pickerInput(
                     inputId = ns("observer_catch"),
-                    label = tagList("Select column that contains catch", div("*", style = "display: inline; color: red;")),
+                    label = tagList("Select data column that contains catch", div("*", style = "display: inline; color: red;")),
                     choices = NULL,
                     width = '100%',
                     multiple = TRUE,
@@ -231,7 +231,7 @@ observerupload_UI <- function(id){
                   ),
                   pickerInput(
                     inputId = ns("observer_catchunits"),
-                    label = tagList("Units of catch", div("*", style = "display: inline; color: red;")),
+                    label = tagList("Create label for units of catch", div("*", style = "display: inline; color: red;")),
                     choices = c("Numbers", "Weight in kg","Weight in tonnes","Other"),
                     selected = character(0),
                     width = '100%',
@@ -242,7 +242,7 @@ observerupload_UI <- function(id){
                   ),
                   pickerInput(
                     inputId = ns("observer_catchtype"),
-                    label = tagList("Catch type", div("*", style = "display: inline; color: red;")),
+                    label = tagList("Create label for catch type", div("*", style = "display: inline; color: red;")),
                     choices = c("Dead discards", "Live discards","Discards","Bycatch","Other"),
                     selected = character(0),
                     width = '100%',
@@ -279,7 +279,7 @@ observerupload_UI <- function(id){
               icon = icon("5"),
               textInput(
                 inputId = ns("observerdata_title"),
-                label = tagList("Title", div("*", style = "display: inline; color: red;")),
+                label = tagList("Create label for observer dataset", div("*", style = "display: inline; color: red;")),
                 width = '100%'
               ),
               br(),

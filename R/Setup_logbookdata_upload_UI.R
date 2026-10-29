@@ -134,7 +134,7 @@ logbookupload_UI <- function(id){
                   12,
                   pickerInput(
                     inputId = ns("logbook_year"),
-                    label = tagList("Select column that contains year", div("*", style = "display: inline; color: red;")),
+                    label = tagList("Select data column that contains year", div("*", style = "display: inline; color: red;")),
                     choices = NULL,
                     width = '100%',
                     multiple = TRUE,
@@ -187,7 +187,7 @@ logbookupload_UI <- function(id){
               icon = icon("4"),
               textInput(
                 inputId = ns("logbookdata_title"),
-                label = tagList("Title", div("*", style = "display: inline; color: red;")),
+                label = tagList("Create label for observer dataset", div("*", style = "display: inline; color: red;")),
                 width = '100%'
               ),
               br(),

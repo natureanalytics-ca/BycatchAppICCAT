@@ -118,7 +118,7 @@ datachecksSetup_UI <- function(id){
                     div(icon("binoculars"), HTML("&nbsp;"), tags$strong(tags$em("Observer effort")), style = "margin-bottom: 10px;"),
                     pickerInput(
                       inputId = ns("observer_effort"),
-                      label = tagList("Select column that contains effort", div("*", style = "display: inline; color: red;")),
+                      label = tagList("Select data column that contains effort", div("*", style = "display: inline; color: red;")),
                       choices = NULL,
                       width = '100%',
                       multiple = TRUE,
@@ -145,7 +145,7 @@ datachecksSetup_UI <- function(id){
                     ),
                     pickerInput(
                       inputId = ns("observer_sampleunit"),
-                      label = tagList("Specify sample unit of observer effort", div("*", style = "display: inline; color: red;"), br(), "(i.e., what does each row represent?)"),
+                      label = tagList("Create label for sample unit of observer effort", div("*", style = "display: inline; color: red;"), br(), "(i.e., what does each row represent?)"),
                       choices = c("Trip", "Set"),
                       selected = NULL,
                       width = '100%',
@@ -164,7 +164,7 @@ datachecksSetup_UI <- function(id){
                     div(icon("ship"), HTML("&nbsp;"), tags$strong(tags$em("Logbook effort")), style = "margin-bottom: 10px;"),
                     pickerInput(
                       inputId = ns("logbook_effort"),
-                      label = tagList("Select column that contains effort", div("*", style = "display: inline; color: red;")),
+                      label = tagList("Select data column that contains effort", div("*", style = "display: inline; color: red;")),
                       choices = NULL,
                       width = '100%',
                       multiple = TRUE,
@@ -206,7 +206,7 @@ datachecksSetup_UI <- function(id){
                         id = ns("logbook_aggregation"),
                         pickerInput(
                           inputId = ns("logbook_aggregationcolumn"),
-                          label = tagList("Specify column containing counts of sample units", div("*", style = "display: inline; color: red;")),
+                          label = tagList("Specify data column containing counts of sample units", div("*", style = "display: inline; color: red;")),
                           choices = NULL,
                           width = '100%',
                           multiple = TRUE,
@@ -344,6 +344,11 @@ datachecksSetup_UI <- function(id){
                         id = ns("warningFactorLogbook"),
                         style = "color: red; font-weight: bold; margin-right: 5px; display: none;",
                         "Warning: logbook effort cannot be selected as a factor variable!"
+                      ),
+                      div(
+                        id = ns("warningFactorMismatch"),
+                        style = "color: red; font-weight: bold; margin-right: 5px; display: none;",
+                        "Warning: Fatal flaw in factor re-naming. Reviewing factor alignment."
                       )
                     )
                   ),
@@ -412,17 +417,17 @@ datachecksSetup_UI <- function(id){
                   12,
                   textInput(
                     inputId = ns("spp_name"),
-                    label = tagList(tags$strong("Add a species common name"), div("*", style = "display: inline; color: red;")),
+                    label = tagList(tags$strong("Create label for species common name"), div("*", style = "display: inline; color: red;")),
                     width = '100%'
                   ),
                   textInput(
                     inputId = ns("spp_scientificname"),
-                    label = tagList(tags$strong("Add a species scientific name"), div("*", style = "display: inline; color: red;")),
+                    label = tagList(tags$strong("Create label for species scientific name"), div("*", style = "display: inline; color: red;")),
                     width = '100%'
                   ),
                   textInput(
                     inputId = ns("datachecks_name"),
-                    label = tagList(tags$strong("Add a brief description"), div("*", style = "display: inline; color: red;")),
+                    label = tagList(tags$strong("Create label for this setup"), div("*", style = "display: inline; color: red;")),
                     width = '100%'
                   )
                 )
