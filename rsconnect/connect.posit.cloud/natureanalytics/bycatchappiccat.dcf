@@ -1,0 +1,12 @@
+name: bycatchappiccat
+title: BycatchAppICCAT
+username: natureanalytics
+account: natureanalytics
+server: connect.posit.cloud
+hostUrl: https://api.connect.posit.cloud/v1
+appId: 01a18944-cad0-5207-0757-35bcfab2de2c
+bundleId:
+url: https://connect.posit.cloud/natureanalytics/content/01a18944-cad0-5207-0757-35bcfab2de2c
+version: 1
+asMultiple: FALSE
+asStatic: FALSE

@@ -6565,7 +6565,7 @@
     },
     "rsconnect": {
       "Package": "rsconnect",
-      "Version": "1.11.0",
+      "Version": "1.11.2",
       "Source": "Repository",
       "Type": "Package",
       "Title": "Deploy Docs, Apps, and APIs to 'Posit Connect', 'shinyapps.io', and 'RPubs'",
